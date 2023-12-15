@@ -1,0 +1,5 @@
+@media print{#header,#right-sidebar,#menu,.small-header,.footer,.dataTables_length,.dt-buttons.btn-group,.dataTables_filter,.dataTables_info,.dataTables_paginate.paging_simple_numbers,.table-actions/*,th[aria-label="Actions"]*/{display:none!important;}#wrapper{position:inherit!important;margin:0!important;border:none!important;}a { pointer-events: none;
+        content:" ici (" attr(href) ") ";
+        /*color: $primary;*/
+        content:" ici (";
+    }}

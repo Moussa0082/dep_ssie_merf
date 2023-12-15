@@ -1,0 +1,10 @@
+<?php
+if($_POST){
+require_once '../fonctions/php/Fonctions.php';	
+extract($_POST);
+echo '<option value=""></option>';
+foreach (FC_Rechercher_Code('SELECT * FROM t_feuille WHERE (Code_Classeur='.$select_classeur.' AND Source_Donnees=\'Non\')') as $row4){
+	echo '<option value="'.$row4['Code_Feuille'].'">'.$row4['Nom_Feuille'].'</option>';
+}
+}
+?>

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+<body>
+ <header class="header navbar navbar-fixed-top" role="banner">
+     </header>
+<div id="container">
+    <div id="sidebar" class="sidebar-fixed">
+        <div id="sidebar-content">
+                    </div>
+        <div id="divider" class="resizeable"></div>
+    </div>
+
+    <div id="content">
+        <div class="container">
+            <div class="crumbs">
+                            </div>
+        <div class="page-header">
+            <div class="p_top_5">
+<!-- Site contenu ici -->
+<style>#mtable tr td, .table thead tr th {vertical-align: middle; }  .table {
+  border-spacing: 0px !important; border-collapse: collapse;
+} .table tbody tr td {vertical-align: middle; }
+</style>
+<script>
+	$(document).ready(function() {
+	      });
+</script>
+<div class="widget box box_projet">
+<div class="widget-header1"> <center><h4><b>Projet d'Investissement de Résilience des Zones Côtières en Afrique de l'Ouest (WACA ResIP Mauritanie)</b> </h4></center></div>
+<div class="widget-header"> <h4><i class="icon-reorder"></i> Plan Budgetaire </h4>
+</div>
+<div class="widget-content" style="display: block;">
+              <table width="99%" border="1" align="left" cellspacing="0" class="table table-striped table-bordered table-hover table-responsive dataTable">
+                <tr class="titrecorps2">
+                  <!--<td align="center"><div class="Style8"><b>Niveau</b></div></td> -->
+<!--                  <td align="center" colspan="4"><div class="Style8"><b>Code</b></div></td>      -->
+                  <td colspan="4"><div align="left"><strong><span class="Style8">Libell&eacute;s </span></strong></div></td>
+                                 </tr>
+                
+<tr><td colspan='4'><b><!--Chapitre-->F :</b> Fonctionnement</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->F1 :</b> Frais de fonctionnement Équipes UGP, UCR</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F101 :</b> Salaires et indemnités  (cadres du gouvernement) (Pour les e........)</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F102 :</b> Carburant et entretien véhicules, assurances</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F103 :</b> Frais de communication et internet</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F104 :</b> Fournitures de bureau</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F105 :</b> Entretien bâtiment, eau et électricité</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F106 :</b> Services Bancaires</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F107 :</b> Documentation générale et technique</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F108 :</b> Entretien et reparation des equipements et materiels bureau</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F109 :</b> Autres matieres et fournitures</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F110 :</b> Locations et charges locatives</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->F3 :</b> Gestion de projet</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F301 :</b> Reunion comité de pilotage</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F302 :</b> Salaire conseiller technique</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F303 :</b> Voyages , Déplacement et missions</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->F304 :</b> Atelier, seminaires et formation</td><td align='center' width='80'></td></tr><tr><td colspan='4'><b><!--Chapitre-->I :</b> Investissement</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I1 :</b> Travaux / Infrastructures</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I101 :</b> Travaux / Infrastructures</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I2 :</b> Équipements</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I201 :</b> Equipement de bureau et électronique</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I202 :</b> Véhicules</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I205 :</b> Matériel et équipement GDP</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I3 :</b> Formation</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I301 :</b> Formation (production matériel, formation, suivi) (titre - g</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I4 :</b> Référentiels techniques et juridiques</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I401 :</b> Bonnes pratiques, Guides, Manuels,  documents légaux (élabor</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I402 :</b> Études, évaluations</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I403 :</b> Audit des comptes</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I404 :</b> Personnel consultants</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I5 :</b> Système d'information et de gestion</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I501 :</b> Élaboration Cartographie, SIG</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I502 :</b> Conception, mise à jour Base de données</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I503 :</b> Document de gestion  tels que Identification Sous projet, PD</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I6 :</b> Sensibilisation et communication</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I601 :</b> Campagne de sensibilisation  (conception, matériel, diffusio</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I602 :</b> Produits de communication (conception, reproduction, diffusion</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I7 :</b> Ateliers</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I701 :</b> Ateliers - réunions de dialogue, de coordination, de validat</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td colspan='3'><b><!--Rubrique-->I8 :</b> Accompagnement, suivi, encadrement technique</td><td align='center' width='80'></td></tr><tr><td width='30' align='right'>&nbsp;</td><td width='30' align='right'>&nbsp;</td><td colspan='2'><b><!--Ligne-->I801 :</b> Suivi, accompagnement et encadrement</td><td align='center' width='80'></td></tr><!--                <tr class="titrecorps2">
+                  <td align="center" colspan="3"><div align="right"><b><span class="Style7 Style11">Total</span></b></div></td>
+                  <td  align="center">&nbsp;</td>
+                  <td colspan="3" align="center">&nbsp;</td>
+                </tr>-->
+                              </table>
+<div class="clear h0">&nbsp;</div>
+    </div>
+<!-- Fin Site contenu ici -->
+            </div>
+        </div>
+ </div>
+        </div>
+    </div>      </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<tables><table nom="fiche_43_details_7">
+<field nom="nomRegion" type="TEXT" estnull="NOT NULL"></field>
+<field nom="nomDepartement" type="TEXT" estnull="NOT NULL"></field>
+<field nom="nomSPrefecture" type="TEXT" estnull="NOT NULL"></field>
+<field nom="nomCanton" type="TEXT" estnull="NOT NULL"></field>
+<field nom="nomVillage" type="TEXT" estnull="NOT NULL"></field>
+<field nom="Nomstructue" type="TEXT" estnull="NOT NULL"></field>
+<field nom="DateCration" type="DATE" estnull="NOT NULL"></field>
+<field nom="MembresCogesHomme" type="TEXT" estnull="NOT NULL"></field>
+<field nom="MembresCogesFemme" type="TEXT" estnull="NOT NULL"></field>
+<field nom="MembresCogesJeune" type="TEXT" estnull="NOT NULL"></field>
+<field nom="NomduPrsident" type="TEXT" estnull="NOT NULL"></field>
+<field nom="SexeDuPrsident" type="VARCHAR(1000)" estnull="NOT NULL"></field>
+<field nom="AgePrsident" type="INT"></field>
+<field nom="SiegeCoges" type="VARCHAR(1000)"></field>
+<field nom="EXISTENCEFACILITATEUR" type="VARCHAR(1000)"></field>
+<field nom="NombreFaciltateur" type="INT" estnull="NOT NULL"></field>
+<field nom="classeur" type="INT" estnull="NOT NULL"></field>
+<field nom="annee" type="INT" estnull="NOT NULL"></field>
+<field nom="structure" type="VARCHAR(20)" estnull="NOT NULL"></field>
+<field nom="projet" type="VARCHAR(20)" estnull="NOT NULL"></field>
+<field nom="id_personnel" type="TEXT" estnull="NOT NULL"></field>
+<field nom="date_enregistrement" type="DATE" estnull="NOT NULL"></field>
+<field nom="etat" type="TEXT" estnull="NOT NULL"></field>
+<field nom="modifier_le" type="DATE" estnull="NOT NULL"></field>
+<field nom="modifier_par" type="TEXT" estnull="NOT NULL"></field>
+</table></tables>

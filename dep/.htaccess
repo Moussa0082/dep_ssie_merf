@@ -1,0 +1,6 @@
+RewriteEngine On
+DirectoryIndex index.php
+AddDefaultCharset UTF-8
+<IfModule mod_headers.c>    
+    Header set Access-Control-Allow-Origin *
+</IfModule>

@@ -1,0 +1,122 @@
+<?php
+///////////////////////////////////////////////
+/*                 SSE                       */
+/*	Conception & Développement: BAMASOFT */
+///////////////////////////////////////////////
+session_start();
+include_once 'system/configuration.php';
+$config = new Config;
+
+if (!isset ($_SESSION["clp_id"])) {
+  //header(sprintf("Location: %s", "./"));
+  exit;
+}
+include_once $config->sys_folder . "/database/db_connexion.php";
+//header('Content-Type: text/html; charset=UTF-8');
+
+if(isset($_GET['niveau']) && intval($_GET['niveau'])>0) { $niveau=intval($_GET['niveau']); } else {$niveau=1;$_GET['niveau']=1;}
+$where = " niveau = ".($niveau-1)." ";
+
+if(isset($_GET["id"]) && !empty($_GET["id"]))
+{
+  $id=($_GET["id"]);
+  mysql_select_db($database_pdar_connexion, $pdar_connexion);
+  $query_liste_activite = "SELECT * FROM ".$database_connect_prefix."cadre_cosop WHERE code='$id'";
+  $liste_activite  = mysql_query($query_liste_activite , $pdar_connexion) or die(mysql_error_show_message(mysql_error()));
+  $row_liste_activite  = mysql_fetch_assoc($liste_activite);
+  $totalRows_liste_activite  = mysql_num_rows($liste_activite);
+}
+
+  mysql_select_db($database_pdar_connexion, $pdar_connexion);
+  $query_entete = "SELECT * FROM ".$database_connect_prefix."cadre_config_cosop  LIMIT 1";
+  $entete  = mysql_query($query_entete , $pdar_connexion) or die(mysql_error_show_message(mysql_error()));
+  $row_entete  = mysql_fetch_assoc($entete);
+  $totalRows_entete  = mysql_num_rows($entete);
+  $libelle = array();
+  if($totalRows_entete>0){ $libelle=explode(",",$row_entete["libelle"]); $type=array(); }
+
+?>
+<script type="text/javascript" src="plugins/validation/jquery.validate.min.js"></script>
+<script>
+	$().ready(function() {
+		// validate the comment form when it is submitted
+		$(".form-horizontal").validate();
+	});
+</script>
+<?php if(isset($_SESSION['clp_niveau']) && $_SESSION['clp_niveau']<2) {?>
+<div class="widget box">
+<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && intval($_GET["id"])>0)?"Modification ":"Nouveau "; echo $libelle[$niveau-1]; ?></h4> </div>
+<div class="widget-content">
+<form action="" class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form1" id="form1" novalidate="novalidate">
+<table border="0" id="mtable" align="center" cellspacing="1" cellpadding="0" width="100%" style="font-size:14px;">
+    <tr valign="top">
+      <td>
+        <div class="form-group" id="code_zone">
+          <label for="code" class="col-md-3 control-label">Code <span class="required">*</span></label>
+          <div class="col-md-9">
+            <input onblur="if(this.value!='' <?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "&& this.value!='".$row_liste_activite['code']."'"; ?>) check_code('verif_code.php?t=cadre_cosop&','w=code='+this.value+' and niveau=<?php echo $niveau; ?> and projet=<?php echo $_SESSION["clp_projet"]; ?>','code_zone'); <?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "else $('#code_zone_text').html('&nbsp;');"; ?>" class="form-control required" type="text" name="code" id="code" value="<?php echo isset($row_liste_activite['code'])?$row_liste_activite['code']:""; ?>" size="32" />
+            <span class="help-block h0" id="code_zone_text">&nbsp;</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+<?php if($niveau>1){
+  mysql_select_db($database_pdar_connexion, $pdar_connexion);
+  $query_entete = "SELECT * FROM ".$database_connect_prefix."cadre_config_cosop LIMIT 1";
+  $entete  = mysql_query($query_entete , $pdar_connexion) or die(mysql_error_show_message(mysql_error()));
+  $row_entete  = mysql_fetch_assoc($entete);
+  $totalRows_entete  = mysql_num_rows($entete);
+  $libelle1 = array();
+  if($totalRows_entete>0){ $libelle1=explode(",",$row_entete["libelle"]);}
+
+  mysql_select_db($database_pdar_connexion, $pdar_connexion);
+  $query_liste_volet = "SELECT * FROM ".$database_connect_prefix."cadre_cosop WHERE niveau=".($niveau-1)." ORDER BY code ASC";
+  $liste_volet  = mysql_query($query_liste_volet , $pdar_connexion) or die(mysql_error_show_message(mysql_error()));
+  $row_liste_volet  = mysql_fetch_assoc($liste_volet);
+  $totalRows_liste_volet  = mysql_num_rows($liste_volet);
+?>
+    <tr valign="top">
+      <td>
+        <div class="form-group">
+          <label for="parent" class="col-md-3 control-label"><?php echo (isset($libelle1[$niveau-1]) && !empty($libelle1[$niveau-1]))?$libelle1[$niveau-1]:"Niveau"; ?> <span class="required">*</span></label>
+          <div class="col-md-9">
+            <select name="parent" id="parent" class="form-control required" >
+              <option value="">Selectionnez</option>
+              <?php if($totalRows_liste_volet>0) { do { ?>
+              <option value="<?php echo $row_liste_volet['code']; ?>" <?php if (isset($row_liste_activite['parent']) && $row_liste_volet['code']==$row_liste_activite['parent']) {echo "SELECTED";} ?>><?php echo $row_liste_volet['code'].": ".$row_liste_volet['intitule']; ?></option>
+              <?php }while($row_liste_volet  = mysql_fetch_assoc($liste_volet)); } ?>
+            </select>
+          </div>
+        </div>
+      </td>
+    </tr>
+<?php }else echo '<input style="display:none;" class="form-control required" type="text" name="parent" id="parent" value="0" size="32" />'; ?>
+    <tr valign="top">
+      <td>
+        <div class="form-group">
+          <label for="intitule" class="col-md-3 control-label"><?php echo (isset($libelle[$niveau-1]) && !empty($libelle[$niveau-1]))?$libelle[$niveau-1]:"Activit&eacute;"; ?> <span class="required">*</span></label>
+          <div class="col-md-9">
+            <textarea class="form-control required" cols="200" rows="3" type="text" name="intitule" id="intitule"><?php echo isset($row_liste_activite['intitule'])?$row_liste_activite['intitule']:""; ?></textarea>
+          </div>
+        </div>
+      </td>
+    </tr>
+</table>
+<div class="form-actions">
+<?php if(isset($_GET["id"])){ ?>
+  <input type="hidden" name="id" value="<?php echo $_GET["id"]; ?>" />
+  <?php } ?>
+  <input type="hidden" name="niveau" value="<?php echo $niveau; ?>" />
+  <input name="submit" type="submit" class="btn btn-success pull-right" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "Modifier"; else echo "Enregistrer" ; ?>" />
+  <input name="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "MM_update"; else echo "MM_insert" ; ?>" type="hidden" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo ($_GET["id"]); else echo "MM_insert" ; ?>" size="32" alt="">
+<?php if(isset($_GET["id"]) && !empty($_GET["id"]) && isset($_SESSION['clp_id']) && $_SESSION['clp_id']=="admin"){ ?>
+<input name="MM_delete" id="MM_delete" type="hidden" value="" size="32" alt="">
+<input name="del" type="submit" onclick="return delete_data('MM_delete','Supprimer ?','<?php echo ($_GET["id"]); ?>');" class="btn btn-danger pull-left" value="Supprimer" />
+<?php } ?>
+<input name="MM_form" id="MM_form" type="hidden" value="form1" size="32" alt="">
+  <!--<input name="Submit2" type="reset" class="btn btn-success pull-right" value="Initialiser" />-->
+</div>
+</form>
+
+</div> </div>
+<?php } ?>
