@@ -136,10 +136,11 @@ if(isset($_GET["id"]) && !empty($_GET["id"]))
   <input type="hidden" name="niveau" value="<?php echo $niveau; ?>" />
   <input name="submit" type="submit" class="btn btn-success pull-right" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "Modifier"; else echo "Enregistrer" ; ?>" />
   <input name="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "MM_update"; else echo "MM_insert" ; ?>" type="hidden" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo ($_GET["id"]); else echo "MM_insert" ; ?>" size="32" alt="">
-<?php if(isset($_GET["id"]) && !empty($_GET["id"]) && isset($_SESSION['clp_id']) && $_SESSION['clp_id']=="admin"){ ?>
-<input name="MM_delete" id="MM_delete" type="hidden" value="" size="32" alt="">
-<input name="del" type="submit" onclick="return delete_data('MM_delete','Supprimer ?','<?php echo ($_GET["id"]); ?>');" class="btn btn-danger pull-left" value="Supprimer" />
+  <?php if(isset($_GET["id"]) && !empty($_GET["id"])){ ?>
+    <input name="MM_delete" id="MM_delete" type="hidden" value="" size="32" alt="">
+    <input name="del" type="submit" onclick="return delete_data('MM_delete','Supprimer ?','<?php echo ($_GET["id"]); ?>');" class="btn btn-danger pull-left" value="Supprimer" />
 <?php } ?>
+
 <input name="MM_form" id="MM_form" type="hidden" value="form1" size="32" alt="">
   <!--<input name="Submit2" type="reset" class="btn btn-success pull-right" value="Initialiser" />-->
 </div>

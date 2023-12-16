@@ -12,6 +12,9 @@ if (!isset ($_SESSION["clp_id"])) {
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
 if(isset($_GET['niveau']) && $_GET['niveau']!="") {$_SESSION["niveau"]=$_GET['niveau']; $niveau=$_SESSION["niveau"];} else { $_SESSION["niveau"]=0; $niveau=$_SESSION["niveau"]; }
+
+
+
 $where = ($niveau==0)?" niveau =1":" niveau = ".$niveau." ";
 if(isset($_GET['cmp']) && $_GET['cmp']!="") $wh = " and code=".GetSQLValueString($_GET['cmp'], "text"); else $wh = "";
 
@@ -111,9 +114,25 @@ if ((isset($_POST["id_val"]) && !empty($_POST["id_val"]))) {
       if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
       header(sprintf("Location: %s", $insertGoTo)); exit();
 }
+ 
 
-if ((isset($_GET["id_sup"]) && !empty($_GET["id_sup"]))) {
+    //suppression
+    if ((isset($_GET["id_sup"]) && !empty($_GET["id_sup"]))) {
       $id = ($_GET["id_sup"]);
+      $query_sup_activite = "DELETE from ".$database_connect_prefix."cadre_i3n WHERE code='$id'";
+
+  try{
+        $Result1 = $pdar_connexion->prepare($query_sup_activite);
+        $Result1->execute();
+  }catch(Exception $e){ die(mysql_error_show_message($e)); }
+  $insertGoTo = (isset($_GET['page']))?$_GET['page']:$_SERVER['PHP_SELF'];
+  if ($Result1) $insertGoTo .= "?del=ok"; else $insertGoTo .= "?del=no";
+  $insertGoTo .= "&niveau=$niveau";
+  header(sprintf("Location: %s", $insertGoTo));
+    }
+    // ------
+  if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
+      $id = ($_POST["MM_delete"]);
       $insertSQL = sprintf("DELETE from ".$database_connect_prefix."cadre_i3n WHERE code=%s",
                            GetSQLValueString($id, "text"));
 
@@ -121,9 +140,10 @@ if ((isset($_GET["id_sup"]) && !empty($_GET["id_sup"]))) {
         $Result1 = $pdar_connexion->prepare($insertSQL);
         $Result1->execute();
   }catch(Exception $e){ die(mysql_error_show_message($e)); }
-        $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
-      if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
-      header(sprintf("Location: %s", $insertGoTo)); exit();
+  $insertGoTo = $_SERVER['PHP_SELF'];
+  if ($Result1) $insertGoTo .= "?del=ok"; else $insertGoTo .= "?del=no";
+  $insertGoTo .= "&niveau=$niveau";
+  header(sprintf("Location: %s", $insertGoTo)); exit();
     }
 
 // if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1"))
@@ -148,19 +168,19 @@ if ((isset($_GET["id_sup"]) && !empty($_GET["id_sup"]))) {
 //     header(sprintf("Location: %s", $insertGoTo));
 //   }
 
-//   if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
-//       $id = ($_POST["MM_delete"]);
-//       $insertSQL = sprintf("DELETE from ".$database_connect_prefix."cadre_i3n WHERE code=%s",
-//                            GetSQLValueString($id, "text"));
+  // if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
+  //     $id = ($_POST["MM_delete"]);
+  //     $insertSQL = sprintf("DELETE from ".$database_connect_prefix."cadre_i3n WHERE code=%s",
+  //                          GetSQLValueString($id, "text"));
 
-//   try{
-//         $Result1 = $pdar_connexion->prepare($insertSQL);
-//         $Result1->execute();
-//   }catch(Exception $e){ die(mysql_error_show_message($e)); }
-//         $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
-//       if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
-//       header(sprintf("Location: %s", $insertGoTo)); exit();
-//     }
+  // try{
+  //       $Result1 = $pdar_connexion->prepare($insertSQL);
+  //       $Result1->execute();
+  // }catch(Exception $e){ die(mysql_error_show_message($e)); }
+  //       $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
+  //     if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
+  //     header(sprintf("Location: %s", $insertGoTo)); exit();
+  //   }
 
 //   if ((isset($_POST["MM_update"]) && !empty($_POST["MM_update"]))) {
 //     $date=date("Y-m-d"); $personnel=$_SESSION['clp_id']; $c=$_POST['id'];
@@ -262,24 +282,7 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1")) {
 
 }
 
-//suppression
-if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
-  $id = ($_POST["MM_delete"]);
-  $deleteSQL = "DELETE FROM " . $database_connect_prefix . "cadre_i3n WHERE code=:id";
 
-  try {
-      $stmt = $pdar_connexion->prepare($deleteSQL);
-      $stmt->bindParam(':id', $id, PDO::PARAM_STR);
-      $stmt->execute();
-  } catch (Exception $e) {
-      die(mysql_error_show_message($e));
-  }
-
-  $insertGoTo = $_SERVER['PHP_SELF'] . "?niveau=" . intval($_GET["niveau"]);
-  if ($stmt) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
-  header(sprintf("Location: %s", $insertGoTo));
-  exit();
-}
 
 // fin action 1
 
