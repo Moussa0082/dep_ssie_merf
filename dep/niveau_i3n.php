@@ -194,13 +194,12 @@ if (isset($_POST["MM_form"]) && $_POST["MM_form"] == "form1") {
 
   // Insertion
   if (isset($_POST["MM_insert"]) && $_POST["MM_insert"] == "MM_insert") {
-      $insertSQL = "INSERT INTO " . $database_connect_prefix . "cadre_config_i3n (nombre, libelle, budget, type, structure, projet) VALUES (:nombre, :libelle, :budget, :type, :structure, :projet)";
+      $insertSQL = "INSERT INTO " . $database_connect_prefix . "cadre_config_i3n (libelle, budget, type, structure, projet) VALUES (:libelle, :type, :structure, :projet)";
 
       try {
           $stmt = $pdar_connexion->prepare($insertSQL);
-          $stmt->bindParam(':nombre', $_POST['nombre'], PDO::PARAM_INT);
+          // $stmt->bindParam(':nombre', $_POST['nombre'], PDO::PARAM_INT);
           $stmt->bindParam(':libelle', $_POST['libelle'], PDO::PARAM_STR);
-          $stmt->bindParam(':budget', $_POST['budget'], PDO::PARAM_INT);
           $stmt->bindParam(':type', $_POST['type'], PDO::PARAM_STR);
           $stmt->bindParam(':structure', $_POST['structure'], PDO::PARAM_STR);
           $stmt->bindParam(':projet', $_POST['projet'], PDO::PARAM_STR);
@@ -243,7 +242,6 @@ if (isset($_POST["MM_form"]) && $_POST["MM_form"] == "form1") {
           $stmt = $pdar_connexion->prepare($updateSQL);
           $stmt->bindParam(':nombre', $_POST['nombre'], PDO::PARAM_INT);
           $stmt->bindParam(':libelle', $_POST['libelle'], PDO::PARAM_STR);
-          $stmt->bindParam(':budget', $_POST['budget'], PDO::PARAM_INT);
           $stmt->bindParam(':type', $_POST['type'], PDO::PARAM_STR);
           $stmt->bindParam(':structure', $_POST['structure'], PDO::PARAM_STR);
           $stmt->bindParam(':projet', $_POST['projet'], PDO::PARAM_STR);
@@ -342,18 +340,18 @@ function handleFormInsert() {
 
   $date = date("Y-m-d");
   $personnel = $_SESSION['clp_id'];
-  $form = $_POST['form2'];
+  $form = $_POST['form'];
   $noms = $form['lib'];
   $nombre = count($noms);
   $types = $form['indic'];
 
-  $insertSQL = "INSERT INTO " . $database_connect_prefix . "cadre_config_i3n (nombre, libelle, budget, type) VALUES (:nombre, :libelle, :budget, :type)";
+  $insertSQL = "INSERT INTO " . $database_connect_prefix . "cadre_config_i3n ( libelle, type) VALUES (:libelle,  :type)";
 
   try {
       $stmt = $pdar_connexion->prepare($insertSQL);
-      $stmt->bindParam(':nombre', $nombre, PDO::PARAM_INT);
+      // $stmt->bindParam(':nombre', $nombre, PDO::PARAM_INT);
       $stmt->bindParam(':libelle', implode(",", $noms), PDO::PARAM_STR);
-      $stmt->bindParam(':budget', '', PDO::PARAM_NULL); // Modifier selon vos besoins
+      // $stmt->bindParam(':budget', '', PDO::PARAM_NULL); // Modifier selon vos besoins
       $stmt->bindParam(':type', implode(",", $types), PDO::PARAM_STR);
       $stmt->execute();
 
@@ -368,7 +366,7 @@ function handleFormUpdate() {
 
   $date = date("Y-m-d");
   $personnel = $_SESSION['clp_id'];
-  $form = $_POST['form2'];
+  $form = $_POST['form'];
   $noms = $form['lib'];
   $nombre = count($noms);
   $types = $form['indic'];
@@ -388,13 +386,12 @@ function handleFormUpdate() {
       handleFormDelete();
   }
 
-  $updateSQL = "UPDATE " . $database_connect_prefix . "cadre_config_i3n SET nombre=:nombre, libelle=:libelle, budget=:budget, type=:type";
+  $updateSQL = "UPDATE " . $database_connect_prefix . "cadre_config_i3n SET libelle=:libelle, type=:type";
 
   try {
       $stmt = $pdar_connexion->prepare($updateSQL);
-      $stmt->bindParam(':nombre', $nombre, PDO::PARAM_INT);
+      // $stmt->bindParam(':nombre', $nombre, PDO::PARAM_INT);
       $stmt->bindParam(':libelle', implode(",", $noms), PDO::PARAM_STR);
-      $stmt->bindParam(':budget', '', PDO::PARAM_NULL); // Modifier selon vos besoins
       $stmt->bindParam(':type', implode(",", $types), PDO::PARAM_STR);
       $stmt->execute();
 
@@ -714,12 +711,11 @@ $query_liste_activite_1 = "SELECT * FROM ".$database_connect_prefix."cadre_i3n W
                   <tr>
                     <th class="checkbox-column"> <input type="checkbox" class="uniform"> </th>
                     <td width="120"><strong>Code</strong></td>
-                    <?php if($niveau!=0) { ?>
-                      <td><?php echo "<strong>".$libelle1[$niveau-1]."</strong>"; ?></td>
-                      <?php } ?>
-                      <td><?php echo "<strong>$libelle[$niveau]</strong>"; ?></td>
-                      
-                      <!-- <td width="120"><strong>Budget</strong></td> -->
+<?php if($niveau!=0) { ?>
+                    <td><?php echo "<strong>".$libelle1[$niveau-1]."</strong>"; ?></td>
+<?php } ?>
+                    <td><?php echo "<strong>$libelle[$niveau]</strong>"; ?></td>
+                    
                     <?php if(isset($_SESSION['clp_id']) && $_SESSION['clp_id']=='admin'){ ?>
                     <td width="80"><strong>Actions</strong></td>
                     <?php } ?>

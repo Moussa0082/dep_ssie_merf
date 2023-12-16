@@ -53,10 +53,11 @@ if(isset($_GET["id"]) && !empty($_GET["id"]))
 <div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && intval($_GET["id"])>0)?"Modification ":"Nouveau "; echo $libelle[$niveau-1]; ?></h4> </div>
 <div class="widget-content">
 
-<form action="niveau_i3n.php"  class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form1" id="form1" novalidate="novalidate">
+<form action="niveau_i3nn.php"  class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form1" id="form1" novalidate="novalidate">
 <table border="0" id="mtable" align="center" cellspacing="1" cellpadding="0" width="100%" style="font-size:14px;">
    <!-- code th debut   -->
    <tr valign="top">
+    
       <td>
         <div class="form-group" id="code_zone">
           <label for="code" class="col-md-3 control-label">Code <span class="required">*</span></label>
@@ -116,7 +117,16 @@ if(isset($_GET["id"]) && !empty($_GET["id"]))
       </td>
     </tr>
     <!-- budget champ  -->
-   
+    <tr valign="top">
+  <td>
+    <div class="form-group">
+      <label for="budget" class="col-md-3 control-label">Budget <span class="required">*</span></label>
+      <div class="col-md-9">
+        <input class="form-control required" type="number" name="budget" id="budget" value="<?php echo isset($row_liste_activite['budget']) ? $row_liste_activite['budget'] : 00; ?>" size="32" />
+      </div>
+    </div>
+  </td>
+</tr>
 <!-- fin champ budget  -->
 </table>
 <div class="form-actions">

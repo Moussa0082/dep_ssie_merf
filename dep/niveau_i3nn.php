@@ -126,65 +126,163 @@ if ((isset($_GET["id_sup"]) && !empty($_GET["id_sup"]))) {
       header(sprintf("Location: %s", $insertGoTo)); exit();
     }
 
-if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1"))
-{
+// if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1"))
+// {
+
+//   if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "MM_insert")) {
+//    $personnel=$_SESSION['clp_id'];
+//         $insertSQL = sprintf("INSERT INTO ".$database_connect_prefix."cadre_i3n (intitule,niveau,code,parent, id_personnel) VALUES (%s, %s, %s, %s, '$personnel')",
+//                          GetSQLValueString($_POST['intitule'], "text"),
+//                          GetSQLValueString($_POST['niveau'], "int"),
+//   					     GetSQLValueString($_POST['code'], "text"),
+//                          GetSQLValueString($_POST['parent'], "text"));
+
+//   try{
+//         $Result1 = $pdar_connexion->prepare($insertSQL);
+//         $Result1->execute();
+//   }catch(Exception $e){ die(mysql_error_show_message($e)); }
+    
+//     $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
+//     if ($Result1) $insertGoTo .= "&insert=ok&add_new=1"; else $insertGoTo .= "&insert=no";
+//     $insertGoTo .= (isset($_POST['sc']))?"&sc=".$_POST['sc']:"";
+//     header(sprintf("Location: %s", $insertGoTo));
+//   }
+
+//   if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
+//       $id = ($_POST["MM_delete"]);
+//       $insertSQL = sprintf("DELETE from ".$database_connect_prefix."cadre_i3n WHERE code=%s",
+//                            GetSQLValueString($id, "text"));
+
+//   try{
+//         $Result1 = $pdar_connexion->prepare($insertSQL);
+//         $Result1->execute();
+//   }catch(Exception $e){ die(mysql_error_show_message($e)); }
+//         $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
+//       if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
+//       header(sprintf("Location: %s", $insertGoTo)); exit();
+//     }
+
+//   if ((isset($_POST["MM_update"]) && !empty($_POST["MM_update"]))) {
+//     $date=date("Y-m-d"); $personnel=$_SESSION['clp_id']; $c=$_POST['id'];
+
+//   	$insertSQL = sprintf("UPDATE ".$database_connect_prefix."cadre_i3n SET intitule=%s, niveau=%s, code=%s, parent=%s, modifier_par='$personnel', modifier_le='$date' WHERE code='$c'",
+//                          GetSQLValueString($_POST['intitule'], "text"),
+//                          GetSQLValueString($_POST['niveau'], "int"),
+//   					     GetSQLValueString($_POST['code'], "text"),
+//                          GetSQLValueString($_POST['parent'], "text"));
+
+
+//   try{
+//         $Result1 = $pdar_connexion->prepare($insertSQL);
+//         $Result1->execute();
+//   }catch(Exception $e){ die(mysql_error_show_message($e)); }
+//      // }
+//    // else $Result1 = false;
+
+//     $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
+//     if ($Result1) $insertGoTo .= "&update=ok"; else $insertGoTo .= "&update=no";
+//     $insertGoTo .= (isset($_POST['sc']))?"&sc=".$_POST['sc']:"";
+//     header(sprintf("Location: %s", $insertGoTo));
+//   }
+// }
+// action ajout
+if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1")) {
 
   if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "MM_insert")) {
-   $personnel=$_SESSION['clp_id'];
-        $insertSQL = sprintf("INSERT INTO ".$database_connect_prefix."cadre_i3n (intitule,niveau,code,parent, id_personnel) VALUES (%s, %s, %s, %s, '$personnel')",
-                         GetSQLValueString($_POST['intitule'], "text"),
-                         GetSQLValueString($_POST['niveau'], "int"),
-  					     GetSQLValueString($_POST['code'], "text"),
-                         GetSQLValueString($_POST['parent'], "text"));
+      $personnel = $_SESSION['clp_id'];
+      $intitule = $_POST['intitule'];
+      $niveau = $_POST['niveau'];
+      $code = $_POST['code'];
+      $parent = $_POST['parent'];
+      $budget = $_POST['budget'];
 
-  try{
-        $Result1 = $pdar_connexion->prepare($insertSQL);
-        $Result1->execute();
-  }catch(Exception $e){ die(mysql_error_show_message($e)); }
-    
-    $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
-    if ($Result1) $insertGoTo .= "&insert=ok&add_new=1"; else $insertGoTo .= "&insert=no";
-    $insertGoTo .= (isset($_POST['sc']))?"&sc=".$_POST['sc']:"";
-    header(sprintf("Location: %s", $insertGoTo));
-  }
+      $insertSQL = "INSERT INTO " . $database_connect_prefix . "cadre_i3n (code, intitule, niveau, parent, budget, id_personnel, date_enregistrement, modifier_le, modifier_par) 
+                    VALUES (:code, :intitule, :niveau, :parent, :budget, :personnel, NOW(), NULL, NULL)";
 
-  if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
-      $id = ($_POST["MM_delete"]);
-      $insertSQL = sprintf("DELETE from ".$database_connect_prefix."cadre_i3n WHERE code=%s",
-                           GetSQLValueString($id, "text"));
+      try {
+          $stmt = $pdar_connexion->prepare($insertSQL);
+          // $stmt->bindParam(':projet', $_POST['projet'], PDO::PARAM_STR);
+          $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+          $stmt->bindParam(':intitule', $intitule, PDO::PARAM_STR);
+          $stmt->bindParam(':niveau', $niveau, PDO::PARAM_INT);
+          $stmt->bindParam(':parent', $parent, PDO::PARAM_STR);
+          $stmt->bindParam(':budget', $budget, PDO::PARAM_STR);
+          $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
 
-  try{
-        $Result1 = $pdar_connexion->prepare($insertSQL);
-        $Result1->execute();
-  }catch(Exception $e){ die(mysql_error_show_message($e)); }
-        $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
-      if ($Result1) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
-      header(sprintf("Location: %s", $insertGoTo)); exit();
-    }
+
+          $stmt->execute();
+      } catch (Exception $e) {
+          die(mysql_error_show_message($e));
+      }
+
+      $insertGoTo = $_SERVER['PHP_SELF'] . "?niveau=" . intval($_GET["niveau"]);
+      if ($stmt) $insertGoTo .= "&insert=ok&add_new=1"; else $insertGoTo .= "&insert=no";
+      $insertGoTo .= (isset($_POST['sc'])) ? "&sc=" . $_POST['sc'] : "";
+      header(sprintf("Location: %s", $insertGoTo));
+  }}
+
+  // Modification
+if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1")) {
 
   if ((isset($_POST["MM_update"]) && !empty($_POST["MM_update"]))) {
-    $date=date("Y-m-d"); $personnel=$_SESSION['clp_id']; $c=$_POST['id'];
+      $date = date("Y-m-d");
+      $personnel = $_SESSION['clp_id'];
+      $c = $_POST['id'];
+      $intitule = $_POST['intitule'];
+      $niveau = $_POST['niveau'];
+      $budget = $_POST['budget'];
+      $code = $_POST['code'];
+      $parent = $_POST['parent'];
 
-  	$insertSQL = sprintf("UPDATE ".$database_connect_prefix."cadre_i3n SET intitule=%s, niveau=%s, code=%s, parent=%s, modifier_par='$personnel', modifier_le='$date' WHERE code='$c'",
-                         GetSQLValueString($_POST['intitule'], "text"),
-                         GetSQLValueString($_POST['niveau'], "int"),
-  					     GetSQLValueString($_POST['code'], "text"),
-                         GetSQLValueString($_POST['parent'], "text"));
+      $updateSQL = "UPDATE " . $database_connect_prefix . "cadre_i3n 
+                    SET intitule=:intitule, niveau=:niveau, code=:code,  parent=:parent,budget=:budget, modifier_par=:personnel, modifier_le=:date 
+                    WHERE code=:c";
 
+      try {
+          $stmt = $pdar_connexion->prepare($updateSQL);
+          $stmt->bindParam(':intitule', $intitule, PDO::PARAM_STR);
+          $stmt->bindParam(':niveau', $niveau, PDO::PARAM_INT);
+          $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+          $stmt->bindParam(':parent', $parent, PDO::PARAM_STR);
+          $stmt->bindParam(':budget', $budget, PDO::PARAM_STR);
+          $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
+          $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+          $stmt->bindParam(':c', $c, PDO::PARAM_STR);
 
-  try{
-        $Result1 = $pdar_connexion->prepare($insertSQL);
-        $Result1->execute();
-  }catch(Exception $e){ die(mysql_error_show_message($e)); }
-     // }
-   // else $Result1 = false;
+          $stmt->execute();
+      } catch (Exception $e) {
+          die(mysql_error_show_message($e));
+      }
 
-    $insertGoTo = $_SERVER['PHP_SELF']."?niveau=".intval($_GET["niveau"]);
-    if ($Result1) $insertGoTo .= "&update=ok"; else $insertGoTo .= "&update=no";
-    $insertGoTo .= (isset($_POST['sc']))?"&sc=".$_POST['sc']:"";
-    header(sprintf("Location: %s", $insertGoTo));
+      $insertGoTo = $_SERVER['PHP_SELF'] . "?niveau=" . intval($_GET["niveau"]);
+      if ($stmt) $insertGoTo .= "&update=ok"; else $insertGoTo .= "&update=no";
+      $insertGoTo .= (isset($_POST['sc'])) ? "&sc=" . $_POST['sc'] : "";
+      header(sprintf("Location: %s", $insertGoTo));
   }
+
 }
+
+//suppression
+if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
+  $id = ($_POST["MM_delete"]);
+  $deleteSQL = "DELETE FROM " . $database_connect_prefix . "cadre_i3n WHERE code=:id";
+
+  try {
+      $stmt = $pdar_connexion->prepare($deleteSQL);
+      $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+      $stmt->execute();
+  } catch (Exception $e) {
+      die(mysql_error_show_message($e));
+  }
+
+  $insertGoTo = $_SERVER['PHP_SELF'] . "?niveau=" . intval($_GET["niveau"]);
+  if ($stmt) $insertGoTo .= "&del=ok"; else $insertGoTo .= "&del=no";
+  header(sprintf("Location: %s", $insertGoTo));
+  exit();
+}
+
+// fin action 1
+
 
 if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form2"))
 {
@@ -531,30 +629,32 @@ $query_liste_activite_1 = "SELECT * FROM ".$database_connect_prefix."cadre_i3n W
                   <tr>
                     <th class="checkbox-column"> <input type="checkbox" class="uniform"> </th>
                     <td width="120"><strong>Code</strong></td>
+                    <td width="120"><strong>Budget</strong></td>
 <?php if($niveau!=0) { ?>
                     <td><?php echo "<strong>".$libelle1[$niveau-1]."</strong>"; ?></td>
 <?php } ?>
                     <td><?php echo "<strong>$libelle[$niveau]</strong>"; ?></td>
                     
-                    <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==1)) { ?>
+                    <?php if(isset($_SESSION['clp_id']) && ($_SESSION['clp_id']=='admin')) { ?>
                     <td width="80"><strong>Actions</strong></td>
                     <?php } ?>
                   </tr>
                 </thead>
                 <tbody>
-<?php if($totalRows_liste_activite_1>0){ foreach($row_liste_activite_1 as $row_liste_activite_1){  $id = $row_liste_activite_1["id"]; $code = $row_liste_activite_1["code"]; $parent = $row_liste_activite_1["parent"]; ?>
+<?php if($totalRows_liste_activite_1>0){ foreach($row_liste_activite_1 as $row_liste_activite_1){  $id = $row_liste_activite_1["id"]; $code = $row_liste_activite_1["code"]; $parent = $row_liste_activite_1["parent"]; $budget = $row_liste_activite_1["budget"]; ?>
                 <tr>
                     <td class="checkbox-column"> <input type="checkbox" name="id_val[]" value="<?php echo $code; ?>" class="uniform"> </td>
                     <td><?php echo $code; ?></td>
+                    <td><?php echo $budget>0 ? $budget : "Ancun budget allouer"; ?></td>
 <?php if($niveau!=0) { ?>
                     <td><?php echo $liste_loc_array[$parent]; ?></td>
 <?php } ?>
                     <td><?php echo $row_liste_activite_1["intitule"]; ?></td>
 
-                    <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==1)) { ?>
+                    <?php if(isset($_SESSION['clp_id']) && ($_SESSION['clp_id']=='admin')) { ?>
                     <td class=" " align="center">
                     <?php
-if(isset($_SESSION["clp_niveau"]) && $_SESSION["clp_niveau"]==1){
+if(isset($_SESSION["clp_id"]) && $_SESSION["clp_id"]=='admin'){
                     echo do_link("","","Modifier ".$libelle[$niveau],"","edit","./","","get_content('new_cadre_i3n.php','id=$code&niveau=".($niveau+1)."','modal-body_add',this.title);",1,"margin:0px 5px;",$nfile);
                     echo do_link("",$_SERVER['PHP_SELF']."?id_sup=".$code."&niveau=$niveau","Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer ".$libelle[$niveau]."');",0,"margin:0px 5px;",$nfile);
 }
@@ -574,7 +674,7 @@ if(isset($_SESSION["clp_niveau"]) && $_SESSION["clp_niveau"]==1){
 <?php } ?>
 </form>
 <?php } else {
-if(isset($_SESSION["clp_niveau"]) && $_SESSION["clp_niveau"]==1)
+if(isset($_SESSION["clp_id"]) && $_SESSION["clp_id"]=='admin')
   echo do_link("","","G&eacute;rer les niveaux","<i class=\"icon-plus\"> Gestion des niveaux </i>","","./","pull-right p11","get_content('new_cadre_niveau_i3n.php','','modal-body_add',this.title);",1,"",$nfile);
 
 echo ("<h2><center>Aucun niveau !</center></h2>"); } ?>
