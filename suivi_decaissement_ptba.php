@@ -316,7 +316,15 @@ $(document).ready(function() {
                   <td ><div align="center"><?php echo $row_liste_mission1['source_financement']; ?></div></td>
                   <td><div align="left"><?php if(isset( $departement_array[$row_liste_mission1['commune']])) echo  $departement_array[$row_liste_mission1['commune']]; ?></div></td>
                   <td><div align="left"><?php echo date_reg($row_liste_mission1['date_collecte'],"/"); ?></div></td>
-                  <td nowrap="nowrap"><div align="right"><?php if($row_liste_mission1['statut']==0) {echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); $totaldec=$totaldec+$row_liste_mission1['cout_realise']; $totaldecmaep=$totaldecmaep+$row_liste_mission1['cout_maep'];} ?></div></td>
+                  <td nowrap="nowrap"><div align="right"><?php if($row_liste_mission1['statut']==0) {
+                    echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); 
+                    $totaldec=$totaldec+$row_liste_mission1['cout_realise'];
+                    //  $totaldecmaep=$totaldecmaep+$row_liste_mission1['cout_maep'];
+                    if(isset($row_liste_mission1['cout_maep'])) {
+                      $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
+                  }
+                     } ?></div></td>
+                  
                   <td nowrap="nowrap"><div align="right">
                     <?php if($row_liste_mission1['statut']!=0) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
                   </div></td>
