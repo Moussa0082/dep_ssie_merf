@@ -249,9 +249,9 @@ if(isset($_GET['annee'])) {$annee=$_GET['annee'];} elseif($totalRows_liste_versi
 
  <style type="text/css">
 
-<!--
 
-#demo-container{padding:2px 15px 2 15px;/*background:#67A897;*/}
+/* background:#67A897;*/
+/* #demo-container{padding:2px 15px 2 15px;}
 
 ul#simple-menu{list-style-type:none;width:100%;position:relative;height:20px;font-family:"Trebuchet MS",Arial,sans-serif;font-size:13px;font-weight:bold;margin:0;padding:0;}
 
@@ -267,9 +267,9 @@ ul#simple-menu li a:hover{background:#2E4560;}
 
 ul#simple-menu li a.current{color:#FFF;background:#ff0000;}
 
-ul#simple-menu li a.current:hover{color:#FFF;background:#ff0000;}
+ul#simple-menu li a.current:hover{color:#FFF;background:#ff0000;} */
 
--->
+
 
 </style>
 

@@ -1,7 +1,7 @@
 <?php
 ///////////////////////////////////////////////
 /*                 SSE                       */
-/*	Conception & Développement: BAMASOFT */
+/*	Conception & Dï¿½veloppement: BAMASOFT */
 ///////////////////////////////////////////////
 session_start();
 include_once 'system/configuration.php';
@@ -113,7 +113,7 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
 if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form4"))
 { //Upload file
   if ((isset($_FILES['fichier']['name'])) && count($_FILES['fichier']['name'])>0 && isset($_POST["id"])) {
-    $ext_autorisees=array('docx','doc','pdf', 'xls', 'xlsx', 'jpeg', 'jpg', 'zip', 'rar'); //Extensions autorisées
+    $ext_autorisees=array('docx','doc','pdf', 'xls', 'xlsx', 'jpeg', 'jpg', 'zip', 'rar'); //Extensions autorisï¿½es
     $url_site = $dir;//'./attachment/dano/';
     $Result1 = false; $link = array();
     $id = ($_POST["id"]);
@@ -129,7 +129,7 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form4"))
     }
     if($Result1){
     mysql_query_ruche("DOC".implode('|',$link), $pdar_connexion,1);
-    $insertSQL = sprintf("UPDATE ".$database_connect_prefix."decaissement_activite SET document=".GetSQLValueString(implode('|',$link), "text").", etat='Modifié', modifier_par='$personnel', modifier_le='$date' WHERE id_decaissement='$id'");
+    $insertSQL = sprintf("UPDATE ".$database_connect_prefix."decaissement_activite SET document=".GetSQLValueString(implode('|',$link), "text").", etat='Modifiï¿½', modifier_par='$personnel', modifier_le='$date' WHERE id_decaissement='$id'");
 
   try{
         $Result1 = $pdar_connexion->prepare($insertSQL);
@@ -204,8 +204,8 @@ try{
 $financement_total=$financement_maep = 0;
  if($totalRows_src_financement>0) { 
 /*foreach($row_src_financement as $row_src_financement1){  */
-  $financement_total = $financement_total+$row_src_financement1["montant"];
-  $financement_maep = $financement_maep+doubleval($row_src_financement1["montant"]);
+  $financement_total = $financement_total+$row_src_financement["montant"];
+  $financement_maep = $financement_maep+doubleval($row_src_financement["montant"]);
    } //}
 
 ?>
@@ -331,7 +331,7 @@ echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
 <td align="center" nowrap="nowrap" class=" ">
 <?php
-echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier décaissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
+echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier dï¿½caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
 
 echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id_sup_mission=".$id,"Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer cette d&eacute;pense ?');",0,"margin:0px 5px;",'plan_ptba.php');
 ?></td>
@@ -401,7 +401,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 <?php } } else{ ?>
 <?php if(isset($_SESSION['clp_niveau']) && $_SESSION['clp_niveau']<2) {?>
 <div class="widget box">
-<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification décaissement ":"Nouveau décaissement"; ?></h4>
+<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification dï¿½caissement ":"Nouveau dï¿½caissement"; ?></h4>
 <a href="<?php echo $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee"; ?>" class="pull-right p11" title="Annuler" >Annuler </a>
 </div>
 <div class="widget-content">
