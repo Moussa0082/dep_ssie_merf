@@ -317,7 +317,7 @@ $(document).ready(function() {
                   <td><div align="left"><?php if(isset( $departement_array[$row_liste_mission1['commune']])) echo  $departement_array[$row_liste_mission1['commune']]; ?></div></td>
                   <td><div align="left"><?php echo date_reg($row_liste_mission1['date_collecte'],"/"); ?></div></td>
                   <td nowrap="nowrap"><div align="right"><?php if($row_liste_mission1['statut']==0) {
-                    echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); 
+                    echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');  //number_format pour mettre des espaces entre les nombre ex: 0 : 1 000 000
                     $totaldec=$totaldec+$row_liste_mission1['cout_realise'];
                     //  $totaldecmaep=$totaldecmaep+$row_liste_mission1['cout_maep'];
                     if(isset($row_liste_mission1['cout_maep'])) {
@@ -359,7 +359,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 				  <tr>
 				    <td><div align="right"><strong>Total Pr&eacute;vu </strong></div></td>
 				    <td nowrap="nowrap"><div align="center"><?php echo number_format($financement_total, 0, ',', ' '); ?></div></td>
-				    <td nowrap="nowrap"><strong>Taux:</strong> <strong class="label-info" style="color:#FFFFFF">&nbsp;&nbsp;<?php if($financement_total>0) echo number_format(100*$totaldec/$financement_total, 0, ',', ' ')." %"; ?>&nbsp;&nbsp;</strong></td>
+				    <td nowrap="nowrap"><strong>Taux:</strong> <strong class="label-info" style="color:#FFFFFF">&nbsp;&nbsp;<?php if($financement_total>0) echo number_format(100*$totaldec/$financement_total, 2, ',', ' ')." %"; ?>&nbsp;&nbsp;</strong></td>
 				    <td colspan="3" nowrap="nowrap">&nbsp;</td>
 				    <td nowrap="nowrap" bgcolor="#F0F0F0">&nbsp;</td>
 				  </tr>
@@ -416,12 +416,14 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 <form action="" class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form3" id="form3" novalidate="novalidate">
 <table border="0" id="mtable" align="center" cellspacing="1" cellpadding="0" width="100%" style="font-size:14px;">
      <tr valign="top">
-      <td> <div class="form-group">
+      <td> 
+        <div class="form-group">
           <label for="source_financement" class="col-md-3 control-label">Source de financement <span class="required">*</span></label>
           <div class="col-md-9">
             <input name="source_financement" type="text" class="form-control required" id="source_financement" value="<?php echo isset($row_liste_mission['source_financement'])?$row_liste_mission['source_financement']:"Etat"; ?>" />
           </div>
-        </div>    </td>
+        </div>  
+        </td>
     </tr>
    
     <tr valign="top">
