@@ -129,7 +129,7 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form4"))
     }
     if($Result1){
     mysql_query_ruche("DOC".implode('|',$link), $pdar_connexion,1);
-    $insertSQL = sprintf("UPDATE ".$database_connect_prefix."decaissement_activite SET document=".GetSQLValueString(implode('|',$link), "text").", etat='Modifi�', modifier_par='$personnel', modifier_le='$date' WHERE id_decaissement='$id'");
+    $insertSQL = sprintf("UPDATE ".$database_connect_prefix."decaissement_activite SET document=".GetSQLValueString(implode('|',$link), "text").", etat='Modifié', modifier_par='$personnel', modifier_le='$date' WHERE id_decaissement='$id'");
 
   try{
         $Result1 = $pdar_connexion->prepare($insertSQL);
@@ -178,18 +178,33 @@ else
 	}catch(Exception $e){ die(mysql_error_show_message($e)); }
 }
 
+// Exemple de requête pour récupérer les partenaires depuis la table "partenaire"
+$query_partenaires = "SELECT id_partenaire, sigle FROM partenaire";
+$result_partenaires = $pdar_connexion->query($query_partenaires);
+// Vérifiez si la requête a réussi
+if ($result_partenaires) {
+    $row_liste_partenaires = $result_partenaires->fetchAll(PDO::FETCH_ASSOC);
+}
+
 $query_liste_departement = "SELECT code_ugl as code_departement, abrege_ugl as nom_departement FROM ".$database_connect_prefix."ugl  ORDER BY code_ugl asc";
+// $query_liste_baillers = "SELECT code as cd, nom as nm FROM ".$database_connect_prefix."partenaire  ORDER BY code asc";
 try{
     $liste_departement = $pdar_connexion->prepare($query_liste_departement);
+    // $liste_bailleurs = $pdar_connexion->prepare($query_liste_baillers);
     $liste_departement->execute();
+    // $liste_bailleurs->execute();
     $row_liste_departement = $liste_departement ->fetchAll();
+    // $row_liste_bailleurs = $liste_bailleurs ->fetchAll();
     $totalRows_liste_departement = $liste_departement->rowCount();
+    // $totalRows_liste_bailleurs = $liste_bailleurs->rowCount();
 	}catch(Exception $e){ die(mysql_error_show_message($e)); }
 $departement_array = array();
+// $bailleurs_array = array();
  if($totalRows_liste_departement>0) { 
 foreach($row_liste_departement as $row_liste_departement1){ 
   $departement_array[$row_liste_departement1["code_departement"]] = $row_liste_departement1["nom_departement"];
-}}
+}
+}
 /**/
 //$query_src_financement = "SELECT montant, observation, type_part FROM ".$database_connect_prefix."part_bailleur where activite=$id_act  ORDER BY type_part asc";
 //$query_src_financement = "select * FROM ".$database_connect_prefix."ptba where code_activite_ptba!='$code_act' and code_activite_ptba like '$code_act%' and annee=$annee and projet='".$_SESSION["clp_projet"]."' ORDER BY code_activite_ptba ASC";
@@ -207,6 +222,32 @@ $financement_total=$financement_maep = 0;
   $financement_total = $financement_total+$row_src_financement["montant"];
   $financement_maep = $financement_maep+doubleval($row_src_financement["montant"]);
    } //}
+
+   // Fonction pour générer le matricule
+   function generateMatricule() {
+    // Obtenez l'année actuelle
+    $currentYear = date("Y");
+    $month = date("m");
+    $day = date("d");
+    //  initialisation de la variable de session à 1
+    // $_SESSION['index'] = 1;
+    // // Incrémentez l'index stocké en session
+    // $_SESSION['index'] = isset($_SESSION['index']) ? ($_SESSION['index']+1) : $_SESSION['index'] = 1;
+    // // $inc  = $_SESSION['index'];
+    if (!isset($_SESSION['index'])) {
+    $_SESSION['index'] = 1;
+} else {
+    // Incrémentez l'index stocké en session
+    $_SESSION['index']++;
+}
+    // Concaténez les éléments pour former le matricule (DM + année + mois + jour + index)
+    $matricule =  $currentYear . $month . $day . $_SESSION['index'];
+    
+    // Retournez le matricule généré
+    return $matricule;
+  }
+
+  $matricule =  generateMatricule();
 
 ?>
 <meta name="viewport" content="width=400, initial-scale=1.0"><head>
@@ -307,7 +348,7 @@ $(document).ready(function() {
                   <td><strong>Engag&eacute; </br>(F CFA) </strong></td>
                   <td><div align="left"><strong>Documents</strong></div></td>
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
-                  <td align="center" width="90" ><strong>Actions</strong></td>
+                  <td align="center" width="90" ><strong>Acti ons</strong></td>
                   <?php } ?>
                 </tr>
             </thead>
@@ -339,7 +380,7 @@ echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
 <td align="center" nowrap="nowrap" class=" ">
 <?php
-echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier d�caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
+echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
 
 echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id_sup_mission=".$id,"Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer cette d&eacute;pense ?');",0,"margin:0px 5px;",'plan_ptba.php');
 ?></td>
@@ -409,23 +450,41 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 <?php } } else{ ?>
 <?php if(isset($_SESSION['clp_niveau']) && $_SESSION['clp_niveau']<2) {?>
 <div class="widget box">
-<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification d�caissement ":"Nouveau d�caissement"; ?></h4>
+<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification décaissement ":"Nouveau décaissement"; ?></h4>
 <a href="<?php echo $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee"; ?>" class="pull-right p11" title="Annuler" >Annuler </a>
 </div>
 <div class="widget-content">
 <form action="" class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form3" id="form3" novalidate="novalidate">
 <table border="0" id="mtable" align="center" cellspacing="1" cellpadding="0" width="100%" style="font-size:14px;">
-     <tr valign="top">
-      <td> 
+     
+    <!-- test  -->
+    <tr valign="top">
+    <td>
         <div class="form-group">
-          <label for="source_financement" class="col-md-3 control-label">Source de financement <span class="required">*</span></label>
-          <div class="col-md-9">
-            <input name="source_financement" type="text" class="form-control required" id="source_financement" value="<?php echo isset($row_liste_mission['source_financement'])?$row_liste_mission['source_financement']:"Etat"; ?>" />
-          </div>
-        </div>  
-        </td>
-    </tr>
-   
+            <label for="partenaire" class="col-md-3 control-label">Partenaire <span class="required">*</span></label>
+            <div class="col-md-6">
+              <!-- Utilisez la liste des partenaires dans le formulaire -->
+<select name="source_financement" id="source_financement" style="width: 200px;">
+    <option value=""> </option>
+    <?php 
+        // Vérifiez si $row_liste_partenaires est défini
+        if (isset($row_liste_partenaires) && is_array($row_liste_partenaires)) {
+            foreach ($row_liste_partenaires as $partenaire) {
+                if (isset($_POST['source_financement']) && $partenaire['source_financement'] == $_POST['source_financement']) {
+                    echo '<option value="' . $partenaire['source_financement'] . '" selected>' . $partenaire['sigle'] . '</option>';
+                } else {
+                    echo '<option value="' . $partenaire['sigle'] . '">' . $partenaire['sigle'] . '</option>';
+                }
+            }
+        }
+    ?>
+</select>
+            </div>
+        </div>
+    </td>
+</tr>
+    <!-- test fin  -->
+    <!-- ancien -->
     <tr valign="top">
       <td>
         <div class="form-group">
@@ -442,13 +501,14 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
     <?php }  ?>
     </select>
           </div>
-        </div>      </td>
+        </div>     
+       </td>
     </tr>
 
     <tr valign="top">
       <td>
         <div class="form-group">
-          <label for="date_validation" class="col-md-3 control-label">Date de d&eacute;caissement <span class="required">*</span></label>
+          <label for="date_validation" class="col-md-3 control-label">Date de décaissement <span class="required">*</span></label>
           <div class="col-md-3">
             <input class="form-control datepicker required" type="text" name="date_validation" id="date_validation" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo implode('/',array_reverse(explode('-',$row_liste_mission['date_collecte']))); else echo date("d/m/Y"); ?>" size="32" />
           </div>
@@ -464,9 +524,9 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
     </tr>
      <tr valign="top">
       <td><div class="form-group">
-          <label for="numero_facture" class="col-md-3 control-label">R&eacute;f&eacute;rence de l'Op&eacute;ration <span class="required">*</span></label>
+          <label for="numero_facture" class="col-md-3 control-label">Référence de l'Opération <span class="required">*</span></label>
           <div class="col-md-9">
-<input name="numero_facture" type="text" class="form-control required" id="numero_facture" value="<?php echo isset($row_liste_mission['numero_facture'])?$row_liste_mission['numero_facture']:"0"; ?>" />
+<input name="numero_facture" type="text" class="form-control required" id="numero_facture" value="<?php echo isset($row_liste_mission['numero_facture'])?$row_liste_mission['numero_facture']: $matricule; ?>" />
           </div>
         </div>  </td>
     </tr>
@@ -477,11 +537,12 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
           <div class="col-md-3">
             <select name="statut" id="statut" class="form-control required" >
               <option value="">Selectionnez</option>
-              <option value="0" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="0") echo 'selected="selected"'; ?>>R&eacute;alis&eacute;</option>
-              <option value="1" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="1") echo 'selected="selected"'; ?>>Engag&eacute;</option>
+              <option value="0" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="0") echo 'selected="selected"'; ?>>Réalisé</option>
+              <option value="1" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="1") echo 'selected="selected"'; ?>>Engagé</option>
             </select>
           </div>
-        </div>      </td>
+        </div>  
+          </td>
     </tr>
 </table>
 <div class="form-actions">
