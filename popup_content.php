@@ -10,31 +10,6 @@ if (!isset ($_SESSION["clp_id"])) {
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
 
-// Assurez-vous d'avoir une connexion à la base de données
-$date=date("Y-m-d");
- $personnel=$_SESSION['clp_id'];
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['decaissementId']) && isset($_POST['statut'])) {
-    $decaissementId = $_POST['decaissementId'];
-    $statut = $_POST['statut'];
-    $montant = $_POST['montant'];
-
-    // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
-
-    // Exécutez la requête d'insertion
-    $insertSQL = sprintf("INSERT INTO ".$database_connect_prefix."decaissement_activite (annee_act, id_activite, source_financement, commune,  date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) VALUES (%s, %s, %s, %s, %s, %s, '$montant', %s, %s, '$date', '$personnel')");
-
-    // Utilisez la connexion à la base de données pour exécuter la requête
-    // $result = mysqli_query($votre_connexion, $insertSQL);
-    
-    // Gérez le résultat selon vos besoins
-    if ($result) {
-        echo "Insertion réussie.";
-    } else {
-        echo "Erreur lors de l'insertion : " . mysqli_error($votre_connexion);
-    }
-} else {
-    echo "Requête non valide.";
-}
 ?>
 
 
@@ -73,6 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['decaissementId']) && i
     </div>
 
     <input type="hidden" id="decaissementId" name="decaissementId" value="">
+    <input type="hidden" id="annee_act" name="annee_act" value="">
+    <input type="hidden" id="id_activite" name="id_activite" value="">
+    <input type="hidden" id="commune" name="commune" value="">
+    <input type="hidden" id="source_financement" name="source_financement" value="">
+    <input type="hidden" id="date_collecte" name="date_collecte" value="">
+    <input type="hidden" id="numero_facture" name="numero_facture" value="">
+    <input type="hidden" id="projet" name="projet" value="">
+    
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary" onclick="updateDecaissementStatus()">Enregistrer</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
@@ -97,20 +80,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['decaissementId']) && i
 function updateDecaissementStatus() {
     var decaissementId = $('#decaissementId').val();
     var statut = $('[name="statut"]:checked').val();
-     // Mettre à jour le statut du bouton radio
-     $('.statut-radio[value="' + statut + '"]').prop('checked', true);
-    // var selectedStatut = $('input[name="statut"]:checked').val();
-    // if(selectedStatut==0){
-    //     $('[data-statut]').hide();
-    // }
-   
+    $('.statut-radio[value="' + statut + '"]').prop('checked', true);
+    var commune = $('#commune').val();
+    var montant = $('#montant').val();
+    var projet = $('#projet').val();
+    var annee_act = $('#annee_act').val();
+    var id_activite = $('#id_activite').val();
+    var source_financement = $('#source_financement').val();
+    var date_collecte = $('#date_collecte').val();
+    var numero_facture = $('#numero_facture').val();
+    
+    
+    console.log("showDecaissementPopup called with id on  widget:", decaissementId, "statut:", statut, "montant:", montant, "annee_act:", annee_act, "id_activité:", id_activite, "source_financement:", source_financement, "commune : ", commune, "date_collecte: ", date_collecte, "numero_facture:", numero_facture, "projet:", projet );
     // Envoyer ces données au serveur (vous devrez créer une page PHP pour gérer cela)
     $.ajax({
         type: 'POST',
         url: 'suivi_decaissement_ptba.php', // Page PHP pour mettre à jour le statut du décaissement
         data: {
             decaissementId: decaissementId,
-            statut: statut
+           montant:montant,
+            statut: statut,
+            annee_act : annee_act,
+            id_activite : id_activite,
+            source_financement : source_financement,
+            commune : commune,
+            date_collecte : date_collecte,
+            numero_facture : numero_facture,
+            projet : projet
         },
         success: function(response) {
             // Gérer la réponse du serveur
@@ -123,34 +119,55 @@ function updateDecaissementStatus() {
     });
 }
 
-var decaissementId = $(this).data('id');
-            var statut = $(this).data('statut');
-            var montant = $(this).data('montant');
-            var annee_act = $(this).data('annee_act');
-            var id_activite = $(this).data('id_activite');
-            var source_financement = $(this).data('source_financement');
-            var commune = $(this).data('commune');
-            var date_collecte = $(this).data('date_collecte');
-            var numero_facture = $(this).data('numero_facture');
-            var projet = $(this).data('projet');
+ 
 
-            // Affiche les données dans la console pour déboguer
-    console.log("Decaissement ID:", decaissementId);
-    console.log("Statut:", statut);
-    console.log("Montant:", montant);
-    console.log("Année act :", annee_act);
-    console.log("Id_activité :", id_activite);
-    console.log("source_financement :", source_financement);
-    console.log("commune :", commune);
-    console.log("date_collecte :", date_collecte);
-    console.log("numero_facture :", numero_facture);
-    console.log("projet :", projet);
+
+
+
+
+    function insertDecaissementData() {
+        var decaissementId = $('#decaissementId').val();
+    var statut = $('[name="statut"]:checked').val();
+    $('.statut-radio[value="' + statut + '"]').prop('checked', true);
+    var commune = $('#commune').val();
+    var montant = $('#montant').val();
+    var projet = $('#projet').val();
+    var annee_act = $('#annee_act').val();
+    var id_activite = $('#id_activite').val();
+    var source_financement = $('#source_financement').val();
+    var date_collecte = $('#date_collecte').val();
+    var numero_facture = $('#numero_facture').val();
+
+    $.ajax({
+        type: 'POST',
+        url: 'popup_content.php', // Assurez-vous d'avoir une page pour l'insertion
+        data: {
+            decaissementId: decaissementId,
+            statut: statut,
+            annee_act : annee_act,
+            id_activite : id_activite,
+            source_financement : source_financement,
+            commune : commune,
+            date_collecte : date_collecte,
+            numero_facture : numero_facture,
+            projet : projet
+        },
+        success: function(response) {
+            alert('Données du décaissement insérées avec succès.');
+            $('#decaissementPopup').modal('hide');
+        },
+        error: function() {
+            alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
+        }
+    });
+}
 
   
 
 // Événement de clic pour le bouton Enregistrer dans le pop-up
 $('#saveButton').click(function() {
     updateDecaissementStatus();
+    // insertDecaissementData();
 });
 </script>
 

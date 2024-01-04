@@ -682,11 +682,19 @@ $('.popup-trigger').hover(function() {
 
     $(document).ready(function() {
         // Fonction pour initialiser et afficher le pop-up
-        function showDecaissementPopup(decaissementId, statut, montant) {
+        function showDecaissementPopup(decaissementId, statut, montant, commune , annee_act, id_activite, source_financement,  date_collecte, numero_facture, projet) {
             // Définir les valeurs par défaut des boutons radio et du montant
             // annee_act, id_activite, source_financement, commune,  date_collecte,
             $('input[name="statut"][value="' + statut + '"]').prop('checked', true);
             $('#decaissementId').val(decaissementId);
+            $('#montant').val(montant);
+            $('#commune').val(commune);
+            $('#annee_act').val(annee_act);
+            $('#id_activite').val(id_activite);
+            $('#source_financement').val(source_financement);
+            $('#date_collecte').val(date_collecte);
+            $('#numero_facture').val(numero_facture);
+            $('#projet').val(projet);
 // Utiliser toLocaleString pour formater le montant
 $('#montant').val(parseInt(montant).toLocaleString());
 
@@ -721,7 +729,35 @@ $('#montant').val(parseInt(montant).toLocaleString());
     console.log("numero_facture :", numero_facture);
     console.log("projet :", projet);
             
-            
+    function insertDecaissementData() {
+    var decaissementId = $('#decaissementId').val();
+    var statut = $('[name="statut"]:checked').val();
+    // Ajoutez d'autres données si nécessaire
+
+    $.ajax({
+        type: 'POST',
+        url: 'popup_content.php', // Assurez-vous d'avoir une page pour l'insertion
+        data: {
+            decaissementId: decaissementId,
+            statut: statut,
+            annee_act : annee_act,
+            id_activite : id_activite,
+            source_financement : source_financement,
+            commune : commune,
+            date_collecte : date_collecte,
+            numero_facture : numero_facture,
+            projet : projet
+        },
+        success: function(response) {
+            alert('Données du décaissement insérées avec succès.');
+            $('#decaissementPopup').modal('hide');
+        },
+        error: function() {
+            alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
+        }
+    });
+}
+
             
             // function updateVisibility() {
         //     var selectedStatut = $('input[name="statut"]:checked').val();
@@ -737,7 +773,7 @@ $('#montant').val(parseInt(montant).toLocaleString());
         // updateVisibility();
         
         
-        console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant);
+            console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant, "annee_act:", annee_act, "id_activité:", id_activite, "source_financement:", source_financement, "commune : ", commune, "date_collecte: ", date_collecte, "numero_facture:", numero_facture, "projet:", projet );
         // Charger le contenu du pop-up via AJAX
         $.ajax({
           url: 'popup_content.php',
@@ -747,7 +783,7 @@ $('#montant').val(parseInt(montant).toLocaleString());
                     $('body').append(response);
                     // Mettre à jour le contenu du pop-up avec les données nécessaires
                     // (par exemple, le montant et le statut)
-                    showDecaissementPopup(decaissementId, statut, montant);
+                    showDecaissementPopup(decaissementId, statut, montant, commune , annee_act, id_activite, source_financement,  date_collecte, numero_facture, projet);
                   },
                 error: function() {
                     console.error('Erreur lors du chargement du pop-up.');
