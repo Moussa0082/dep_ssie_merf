@@ -86,8 +86,8 @@ try{
 }catch(Exception $e){ die(mysql_error_show_message($e)); }
 ?>
 
-<ul class="nav navbar-nav navbar-right">
-<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Choix du Projet"> <i class="icon-database gray"></i> <span class="gray1"><i class="icon-caret-down small"></i></span> </a> <ul class="dropdown-menu extended notification"> <!--<li class="title"> <p><?php //if(!empty($_SESSION["clp_programmes_2qc_actif"])){ ?>"<b><?php //echo $_SESSION["clp_programmes_2qc_actif"]; ?></b>" est s&eacute;lectionn&eacute;<?php //} else { ?>Veuillez s&eacute;lectionner un Projet<?php //} ?></p> </li>-->
+<ul class="nav navbar-nav navbar-right" >
+<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Choix du Projet"> <i class="icon-database gray"></i> <span class="gray1"><i class="icon-caret-down small"></i></span> </a> <ul class="dropdown-menu extended notification" style=" max-height: 200px;overflow-y: auto;"> <!--<li class="title"> <p><?php //if(!empty($_SESSION["clp_programmes_2qc_actif"])){ ?>"<b><?php //echo $_SESSION["clp_programmes_2qc_actif"]; ?></b>" est s&eacute;lectionn&eacute;<?php //} else { ?>Veuillez s&eacute;lectionner un Projet<?php //} ?></p> </li>-->
 <?php
 $editFormAction = $_SERVER['PHP_SELF'];
 $currentPage = $_SERVER['PHP_SELF'];

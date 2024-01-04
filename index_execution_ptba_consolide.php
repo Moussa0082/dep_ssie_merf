@@ -227,6 +227,8 @@ $(function () {
                 data: [<?php echo $taux_cout;  ?>]
             }<?php //} ?>]
         });
+        console.log( "valeurs : ", [[  <?php echo $taux_cout; ?>]]);
+
     });
 </script>
 	</body>

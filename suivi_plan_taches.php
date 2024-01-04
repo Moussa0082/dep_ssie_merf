@@ -75,7 +75,7 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form2"))
     $Result1 = $pdar_connexion->prepare($query_sup_cible_indicateur);
     $Result1->execute();
   }catch(Exception $e){ die(mysql_error_show_message($e)); }*/
-    $ext_autorisees=array('docx','doc','pdf', 'xls', 'xlsx', 'jpeg', 'jpg', 'zip', 'rar'); //Extensions autoris&eacute;es
+    $ext_autorisees=array('docx','doc','pdf', 'xls', 'xlsx', 'jpeg', 'jpg', 'zip', 'rar', 'png'); //Extensions autoris&eacute;es
   foreach ($id_groupe_tache as $key => $value)
   {
   if(isset($date_reelle[$key]) && !empty($date_reelle[$key]) && isset($n_lot[$key]) && !empty($n_lot[$key])) 

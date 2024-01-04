@@ -179,7 +179,8 @@ else
 }
 
 // Exemple de requête pour récupérer les partenaires depuis la table "partenaire"
-$query_partenaires = "SELECT id_partenaire, sigle FROM partenaire";
+// $query_partenaires = "SELECT id_partenaire, sigle FROM partenaire";
+$query_partenaires =  "SELECT * FROM ".$database_connect_prefix."partenaire where code in (select bailleur from ".$database_connect_prefix."type_part WHERE projet='".$_SESSION["clp_projet"]."')";
 $result_partenaires = $pdar_connexion->query($query_partenaires);
 // Vérifiez si la requête a réussi
 if ($result_partenaires) {
@@ -336,7 +337,8 @@ $(document).ready(function() {
 <?php echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&add=1","Nouveau d&eacute;caissement","<i class='icon-plus'> Nouveau d&eacute;caissement </i>","simple","./","pull-right p11","",0,"","plan_ptba.php"); ?>
 <?php } ?>
 </div>
-<div class="widget-content">
+<div class="widget-content" style="width:100%;">
+
 <table border="0" cellspacing="0" class="table table-striped table-bordered table-hover table-responsive datatable" align="center" id="mtable" >
             <thead>
                 <tr>
@@ -344,11 +346,12 @@ $(document).ready(function() {
                   <td><div align="left"><strong>Site</strong></div></td>
                   <!--<td rowspan="2"><div align="left"><strong>Resum&eacute;</strong></div></td>-->
                   <td><div align="center"><strong>Date</strong></div></td>
-                  <td><strong>D&eacute;caiss&eacute; </br>(F CFA) </strong></td>
-                  <td><strong>Engag&eacute; </br>(F CFA) </strong></td>
+                  <td><strong>Engagé </br>(F CFA) </strong></td>
+                  <td><strong>Ordonnancé </br>(F CFA) </strong></td>
+                  <td><strong>Décaissé </br>(F CFA) </strong></td>
                   <td><div align="left"><strong>Documents</strong></div></td>
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
-                  <td align="center" width="90" ><strong>Acti ons</strong></td>
+                  <td align="center" width="90" ><strong>Actions</strong></td>
                   <?php } ?>
                 </tr>
             </thead>
@@ -357,18 +360,55 @@ $(document).ready(function() {
                   <td ><div align="center"><?php echo $row_liste_mission1['source_financement']; ?></div></td>
                   <td><div align="left"><?php if(isset( $departement_array[$row_liste_mission1['commune']])) echo  $departement_array[$row_liste_mission1['commune']]; ?></div></td>
                   <td><div align="left"><?php echo date_reg($row_liste_mission1['date_collecte'],"/"); ?></div></td>
-                  <td nowrap="nowrap"><div align="right"><?php if($row_liste_mission1['statut']==0) {
-                    echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');  //number_format pour mettre des espaces entre les nombre ex: 0 : 1 000 000
-                    $totaldec=$totaldec+$row_liste_mission1['cout_realise'];
-                    //  $totaldecmaep=$totaldecmaep+$row_liste_mission1['cout_maep'];
-                    if(isset($row_liste_mission1['cout_maep'])) {
-                      $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
-                  }
-                     } ?></div></td>
-                  
-                  <td nowrap="nowrap"><div align="right">
-                    <?php if($row_liste_mission1['statut']!=0) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
-                  </div></td>
+                     <!-- debut montant en fonction du libéllé choisi -->
+   
+    <!-- foul b -->
+    <td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
+data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
+    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
+    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
+    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
+ data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
+
+    <div align="right">
+        <?php if($row_liste_mission1['statut'] == 0) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+    </div>
+</td>
+
+<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
+data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
+    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
+    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
+    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
+ data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
+    <div align="right">
+        <?php if($row_liste_mission1['statut'] == 1) {
+            echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');
+            $totaldec = $totaldec + $row_liste_mission1['cout_realise'];
+            if(isset($row_liste_mission1['cout_maep'])) {
+                $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
+            }
+        } ?>
+    </div>
+</td>
+
+<!-- ordonnancer -->
+<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
+data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
+    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
+    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
+    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
+ data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
+    <div align="right">
+        <?php if($row_liste_mission1['statut'] == 2) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+    </div>
+</td>
+    <!-- fin td ordonnacer -->
+
+    
+
+    <!-- fin montant -->
+
                   <td><div align="left">
 <?php $titre = "Ajouter"; $titre1 = "Ajout"; if(isset($row_liste_mission1["document"]) && !empty($row_liste_mission1["document"])){ $a = explode("|",$row_liste_mission1["document"]); $j=1; foreach($a as $file){ if(file_exists($file)){ $name = substr(strrchr($file, "/"), 1); echo "<a href='./download_file.php?file=".$file."' title='".$name."' style='display:block;' >Fichier ".$j."</a>"; $j++; } } $titre = "Modifier"; $titre1 = "Modification"; } ?>
 <div align="center">
@@ -465,7 +505,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
             <div class="col-md-6">
               <!-- Utilisez la liste des partenaires dans le formulaire -->
 <select name="source_financement" id="source_financement" style="width: 200px;">
-    <option value=""> </option>
+    <option value="">Source de financement </option>
     <?php 
         // Vérifiez si $row_liste_partenaires est défini
         if (isset($row_liste_partenaires) && is_array($row_liste_partenaires)) {
@@ -491,8 +531,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 			  <label for="type" class="col-md-3 control-label">Site <span class="required">*</span></label>
           <div class="col-md-6">
 		              <select name="commune" id="commune" class="full-width-fix select2-select-00 required" data-placeholder="S&eacute;lectionnez un site">
-
-            <option></option>
+                   <option value="">Sélectionnez un site</option>
 
           <?php foreach($row_liste_departement as $row_liste_departement){ ?>
 
@@ -537,8 +576,9 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
           <div class="col-md-3">
             <select name="statut" id="statut" class="form-control required" >
               <option value="">Selectionnez</option>
-              <option value="0" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="0") echo 'selected="selected"'; ?>>Réalisé</option>
-              <option value="1" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="1") echo 'selected="selected"'; ?>>Engagé</option>
+              <option value="0" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="0") echo 'selected="selected"'; ?>>Engagé</option>
+              <option value="1" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="1") echo 'selected="selected"'; ?>>Ordonnancé</option>
+              <option value="2" <?php if(isset($_GET['id']) && $row_liste_mission['statut']=="2") echo 'selected="selected"'; ?>>Réalisé</option>
             </select>
           </div>
         </div>  
@@ -569,6 +609,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 </div> </div>
 <?php } ?>
 <?php } ?>
+
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -589,12 +630,134 @@ elseif($taux_progressc>=70) $color = "success";
         // reload parent frame
 
         $(".close", window.parent.document).click(function(){
-            $("#label1c_<?php echo $id_act; ?>", window.parent.document).html('<div class="progress"> <div class="progress-bar progress-bar-<?php echo $color; ?>" style="width:<?php echo number_format($percentc, 0, ',', ' '); ?>%"><?php echo (((isset($taux_progressc) && $taux_progressc>0))?number_format($taux_progressc, 0, ',', ' ')." %":"Suivre"); ?></div> </div>');
-        });
+  // Mettre à jour la balise label1c_
+  $("#label1c_<?php echo $id_act; ?>", window.parent.document).html('<div class="progress"> <div class="progress-bar progress-bar-<?php echo $color; ?>" style="width:<?php echo number_format($percentc, 0, ',', ' '); ?>%"><?php echo (((isset($taux_progressc) && $taux_progressc>0))?number_format($taux_progressc, 0, ',', ' ')." %":"Suivre"); ?></div> </div>');
+
+  // Mettre à jour le localStorage
+  localStorage.setItem('rate_' + <?php echo $id_act; ?>, <?php echo $taux_progressc; ?>);
+});
+
+          
 
         $("button[data-dismiss='modal']", window.parent.document).click(function(){
             $("#label1c_<?php echo $id_act; ?>", window.parent.document).html('<div class="progress"> <div class="progress-bar progress-bar-<?php echo $color; ?>" style="width:<?php echo number_format($percentc, 0, ',', ' '); ?>%"><?php echo (((isset($taux_progressc) && $taux_progressc>0))?number_format($taux_progressc, 0, ',', ' ')." %":"Suivre"); ?></div> </div>');
         });
-<?php //} ?>
-  });
+        });
 </script>
+
+
+<script>
+  $(document).ready(function() {
+    // Mettez à jour le taux au chargement de la page
+    updateTaux();
+
+    // Fonction pour mettre à jour le taux
+    function updateTaux() {
+        $("#label1c_<?php echo $id_act; ?>").html('<div class="progress"> <div class="progress-bar progress-bar-<?php echo $color; ?>" style="width:<?php echo number_format($percentc, 0, ',', ' '); ?>%"><?php echo (((isset($taux_progressc) && $taux_progressc > 0)) ? number_format($taux_progressc, 0, ',', ' ') . " %" : "Suivre"); ?></div> </div>');
+    }
+        
+    // Reload parent frame lors de la fermeture du pop-up
+    $(".close", window.parent.document).click(function(){
+        updateTaux();
+    });
+
+    $("button[data-dismiss='modal']", window.parent.document).click(function(){
+        updateTaux();
+    });
+});
+</script>
+
+
+<!-- pop up form  -->
+
+
+<!-- Ajoutez ces scripts au bas de votre page -->
+<!-- Ajoutez ces scripts au bas de votre page -->
+<script>
+$('.popup-trigger').hover(function() {
+  $(this).css('cursor', 'pointer');
+}, function() {
+  $(this).css('cursor', 'auto');
+});
+
+    $(document).ready(function() {
+        // Fonction pour initialiser et afficher le pop-up
+        function showDecaissementPopup(decaissementId, statut, montant) {
+            // Définir les valeurs par défaut des boutons radio et du montant
+            // annee_act, id_activite, source_financement, commune,  date_collecte,
+            $('input[name="statut"][value="' + statut + '"]').prop('checked', true);
+            $('#decaissementId').val(decaissementId);
+// Utiliser toLocaleString pour formater le montant
+$('#montant').val(parseInt(montant).toLocaleString());
+
+            console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant);
+            
+            // Afficher le pop-up
+            $('#decaissementPopup').modal('show');
+          }
+          
+        // Événement de clic pour afficher le pop-up lorsqu'on clique sur les cellules spécifiques
+        $('.popup-trigger').click(function() {
+            var decaissementId = $(this).data('id');
+            var statut = $(this).data('statut');
+            var montant = $(this).data('montant');
+            var annee_act = $(this).data('annee_act');
+            var id_activite = $(this).data('id_activite');
+            var source_financement = $(this).data('source_financement');
+            var commune = $(this).data('commune');
+            var date_collecte = $(this).data('date_collecte');
+            var numero_facture = $(this).data('numero_facture');
+            var projet = $(this).data('projet');
+
+            // Affiche les données dans la console pour déboguer
+    console.log("Decaissement ID:", decaissementId);
+    console.log("Statut:", statut);
+    console.log("Montant:", montant);
+    console.log("Année act :", annee_act);
+    console.log("Id_activité :", id_activite);
+    console.log("source_financement :", source_financement);
+    console.log("commune :", commune);
+    console.log("date_collecte :", date_collecte);
+    console.log("numero_facture :", numero_facture);
+    console.log("projet :", projet);
+            
+            
+            
+            // function updateVisibility() {
+        //     var selectedStatut = $('input[name="statut"]:checked').val();
+
+        //     // Masquer tous les éléments
+        //     $('[data-statut]').hide();
+
+        //     // Afficher les éléments correspondants au statut sélectionné
+        //     $('[data-statut="' + selectedStatut + '"]').show();
+        // }
+        
+        // // Appeler la fonction lors du chargement de la page
+        // updateVisibility();
+        
+        
+        console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant);
+        // Charger le contenu du pop-up via AJAX
+        $.ajax({
+          url: 'popup_content.php',
+                type: 'GET',
+                success: function(response) {
+                  // Insérer le contenu du pop-up dans votre page actuelle
+                    $('body').append(response);
+                    // Mettre à jour le contenu du pop-up avec les données nécessaires
+                    // (par exemple, le montant et le statut)
+                    showDecaissementPopup(decaissementId, statut, montant);
+                  },
+                error: function() {
+                    console.error('Erreur lors du chargement du pop-up.');
+                }
+            });
+        });
+    });
+
+
+</script>
+
+
+<!-- fin pop up form -->

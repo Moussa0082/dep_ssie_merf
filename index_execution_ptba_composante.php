@@ -82,7 +82,8 @@ if($totalRows_liste_couta>0){ foreach($row_liste_couta as $row_liste_couta){
 if($row_liste_couta["prevu"]>0) $tab_cout[$row_liste_couta["code"]]=100*($row_liste_couta["realise"]/$row_liste_couta["prevu"]);
 //else $tab_cout[$row_liste_couta["code"]]=0;
  //$depense_array[$row_liste_couta["code"]]=$row_liste_couta["realise"]+$row_liste_couta["engage"];
- } }
+ } 
+}
 //}
 //if(isset($cmp) && $cmp=='%') {
 //Taux tache
@@ -100,8 +101,9 @@ try{
 //$tache = array();
 if($totalRows_liste_taux_tache>0){ foreach($row_liste_taux_tache as $row_liste_taux_tache){
  if(isset($activitep_array[$row_liste_taux_tache["cp"]]) && $activitep_array[$row_liste_taux_tache["cp"]]>0) $tache[$row_liste_taux_tache["cp"]]=$row_liste_taux_tache["taux_cp"]/$activitep_array[$row_liste_taux_tache["cp"]];
- //$realise_arrayas[$row_liste_couta["code"]]=$row_liste_couta["realise"]+$row_liste_couta["engage"];
- } }
+//  $realise_arrayas[$row_liste_couta["code"]]=$row_liste_couta["realise"]+$row_liste_couta["engage"];
+ } 
+}
  
  //echo  $query_liste_taux_tache;
 //}
@@ -130,15 +132,15 @@ if($totalRows_liste_taux_ind_ptba>0){ foreach($row_liste_taux_ind_ptba as $row_l
 } }
     }
 //tache
-//if($ntatc>0) $tache[$row_liste_activite['code']] = number_format($ttrc/$ntatc, 2, '.', ' ');
-//else $tache[$row_liste_activite['code']] = 0;
-//indicateur
-//if($ntac>0) $indicateur[$row_liste_activite['code']] = number_format($tgic/$ntac, 2, '.', ' ');
-//else $indicateur[$row_liste_activite['code']] = 0;
-//$tgi=$tgi+$trai; $tgic=$tgic+$trai; $tgiptba=$tgiptba+$trai;
-//cout
-//if(isset($cout_array[$row_liste_activite["code"]]) && isset($depense_array[$row_liste_activite["code"]]) && $cout_array[$row_liste_activite["code"]]>0) $tab_cout[$row_liste_activite['code']] = number_format(100*($depense_array[$row_liste_activite["code"]]/$cout_array[$row_liste_activite["code"]]), 2, '.', ' ');
-//else $tab_cout[$row_liste_activite['code']] = 0;
+// if($ntatc>0) $tache[$row_liste_activite['code']] = number_format($ttrc/$ntatc, 2, '.', ' ');
+// else $tache[$row_liste_activite['code']] = 0;
+// indicateur
+// if($ntac>0) $indicateur[$row_liste_activite['code']] = number_format($tgic/$ntac, 2, '.', ' ');
+// else $indicateur[$row_liste_activite['code']] = 0;
+// $tgi=$tgi+$trai; $tgic=$tgic+$trai; $tgiptba=$tgiptba+$trai;
+// cout
+// if(isset($cout_array[$row_liste_activite["code"]]) && isset($depense_array[$row_liste_activite["code"]]) && $cout_array[$row_liste_activite["code"]]>0) $tab_cout[$row_liste_activite['code']] = number_format(100*($depense_array[$row_liste_activite["code"]]/$cout_array[$row_liste_activite["code"]]), 2, '.', ' ');
+// else $tab_cout[$row_liste_activite['code']] = 0;
  $query_liste_versiona = "SELECT * FROM ".$database_connect_prefix."version_ptba ORDER BY date_validation asc";
 try{
     $liste_versiona = $pdar_connexion->prepare($query_liste_versiona);
@@ -167,8 +169,12 @@ $TableauVersionPA[$row_liste_versiona["id_version_ptba"]]=$row_liste_versiona["a
 <div id="tab_feed_<?php echo $annee; ?>" style="height: 320px; max-height: 320px; margin: 0 auto"></div>
 <script type="text/javascript">
 //composante
+
+$(document).ready(function(){
+
 $(function () {
-        $('#tab_feed_<?php echo $annee; ?>').highcharts({
+    
+    $('#tab_feed_<?php echo $annee; ?>').highcharts({
             chart: {
                 type: 'column'
             },
@@ -190,10 +196,10 @@ $(function () {
                 }
             },
             tooltip: {
-               pointFormat:'{series.name}: {point.y:.0f} %'
+                pointFormat:'{series.name}: {point.y:.0f} %'
                 /*headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.0f} %</b></td></tr>',
+                '<td style="padding:0"><b>{point.y:.0f} %</b></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true */
@@ -210,32 +216,36 @@ $(function () {
                     pointPadding: 0.2,
                     borderWidth: 0
                 }
-                },
+            },
                           credits: {
                 enabled: true,
                 href: 'http:#',
                 text: 'RUCHE : <?php echo date("d/m/Y H:i"); ?>',
                 style: {
-                cursor: 'pointer',
-                color: '#6633FF',
+                    cursor: 'pointer',
+                    color: '#6633FF',
                 fontSize: '10px',
                 margin: '10px'
                 }
             },
             series: [
-			<?php //if(isset($cmp) && $cmp=='%') {?>
-			{
-                name: '<?php echo ("Avancement technique"); ?>',
-                data: [<?php foreach($tache as $c) echo $c.",";  ?>]
-            },<?php  //} ?> {
-                name: '<?php echo ("Indicateurs"); ?>',
-                data: [<?php foreach($indicateur as $c) echo $c.",";  ?>]
-            }<?php //if(isset($cmp) && $cmp=='%') ?>, {
-                name: '<?php echo ("Décaissement"); ?>',
-                data: [<?php foreach($tab_cout as $c) echo $c.",";  ?>]
-            }<?php  //} ?>]
+                            <?php
+                            $data = array(
+                                array("name" => "Avancement technique", "values" => $tache),
+                                array("name" => "Indicateurs", "values" => $indicateur),
+                                array("name" => "Décaissement", "values" => $tab_cout)
+                            );
+
+                            foreach ($data as $serie) {
+                                echo "{ name: '" . $serie['name'] . "', data: [" . implode(",", $serie['values']) . "] },";
+                            }
+                            ?>
+                        ]
         });
     });
+    console.log( "valeurs : ", [[  <?php foreach($tab_cout as $c) echo $c . ","; ?>]]);
+})
+
 </script>
 	</body>
 </html>

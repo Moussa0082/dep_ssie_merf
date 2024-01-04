@@ -287,14 +287,35 @@ $percentc=100;
 if($taux_progressc<39) $color = "danger";
 elseif($taux_progressc<69) $color = "warning";
 elseif($taux_progressc>=70) $color = "success"; 
-//else $color = "danger";?>
+//else $color = "danger";
+
+?>
 
 <span id="label1c_<?php echo $id_act; ?>" >
 <div class="progress" align="center"> <div  class="progress-bar progress-bar-<?php echo $color; ?>" style="width: <?php echo $percentc; ?>%; text-align:center"><?php echo (isset($taux_progressc) && $taux_progressc>0)?number_format($taux_progressc, 0, ',', ' ')." %":"Suivre"; unset($taux_progressc); ?></div> </div>
-</span></a></td>
+</span></a>
+</td>
 <td class=" ">
 
 <?php //suivi tache
+
+ 
+$query_src_financement = "SELECT SUM( if(montant>0, montant,0) ) AS montant  FROM part_bailleur where  activite=$id_act";
+
+try{
+    $src_financement = $pdar_connexion->prepare($query_src_financement);
+    $src_financement->execute();
+    $row_src_financement = $src_financement ->fetch();
+    $totalRows_src_financement = $src_financement->rowCount();
+	}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$financement_total=$financement_maep = 0;
+ if($totalRows_src_financement>0) { 
+/*foreach($row_src_financement as $row_src_financement1){  */
+  $financement_total = $financement_total+$row_src_financement["montant"];
+  $financement_maep = $financement_maep+doubleval($row_src_financement["montant"]);
+   }
+
+  //  taux fin recuperation 
 
 $color = "danger";
 
@@ -339,5 +360,21 @@ elseif($taux_progress>=70) $color = "success";
 
 <?php $i++; } } ?>
 </tbody></table>
+
+ <script>
+ $(document).ready(function() {
+    var tauxArrayJson = localStorage.getItem("taux_array");
+    var tauxArray = JSON.parse(tauxArrayJson);
+    // ... (code pour afficher les taux)
+    // ... (suite du code)
+tauxArray.forEach(function(element) {
+    // Construction du code HTML pour la ligne
+    var html = '<tr><td>' + element.id_act + '</td><td><div class="progress"> <div class="progress-bar progress-bar-' + element.color + '" style="width:' + number_format(element.taux_progressc, 0, ',', ' ') + '%">' + (((element.taux_progressc > 0) ? number_format(element.taux_progressc, 0, ',', ' ') + ' %' : 'Suivre')) + '</div> </div></td></tr>';
+
+    // Ajout de la ligne au tableau
+    $("#table-body").append(html);
+});
+});
+ </script>
 
 <?php include 'modal_add.php'; ?>
