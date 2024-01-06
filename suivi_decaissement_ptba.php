@@ -169,7 +169,7 @@ if(isset($_GET["id"]) && !empty($_GET["id"]))
 else
 {                  //where projet='".$_SESSION["clp_projet"]."'
   //Mission supervision
-  $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite='$id_act' and annee_act=$annee order by date_collecte desc, commune desc ";
+  $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite = $id_act AND annee_act = $annee ORDER BY date_collecte DESC, commune DESC";
   try{
     $liste_mission1 = $pdar_connexion->prepare($query_liste_mission);
     $liste_mission1->execute();
@@ -381,14 +381,8 @@ data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activit
     data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
     data-projet="<?php echo $row_liste_mission1['projet']; ?>"
  data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
-    <div align="right">
-        <?php if($row_liste_mission1['statut'] == 1) {
-            echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');
-            $totaldec = $totaldec + $row_liste_mission1['cout_realise'];
-            if(isset($row_liste_mission1['cout_maep'])) {
-                $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
-            }
-        } ?>
+ <?php if($row_liste_mission1['statut'] == 1) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+   
     </div>
 </td>
 
@@ -400,7 +394,14 @@ data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activit
     data-projet="<?php echo $row_liste_mission1['projet']; ?>"
  data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
     <div align="right">
-        <?php if($row_liste_mission1['statut'] == 2) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+    <div align="right">
+        <?php if($row_liste_mission1['statut'] == 2) {
+            echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');
+            $totaldec = $totaldec + $row_liste_mission1['cout_realise'];
+            if(isset($row_liste_mission1['cout_maep'])) {
+                $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
+            }
+        } ?>
     </div>
 </td>
     <!-- fin td ordonnacer -->
@@ -696,7 +697,7 @@ $('.popup-trigger').hover(function() {
             $('#numero_facture').val(numero_facture);
             $('#projet').val(projet);
 // Utiliser toLocaleString pour formater le montant
-$('#montant').val(parseInt(montant).toLocaleString());
+// $('#montant').val(parseInt(montant).toLocaleString());
 
             console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant);
             

@@ -8,8 +8,58 @@ if (!isset ($_SESSION["clp_id"])) {
   //header(sprintf("Location: %s", "./"));
   exit;
 }
+
 include_once $config->sys_folder . "/database/db_connexion.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $decaissementId = $_POST['decaissementId'];
+    $statut = $_POST['statut'];
+    $annee_act = $_POST['annee_act'];
+    $id_activite = $_POST['id_activite'];
+    $source_financement = $_POST['source_financement'];
+    $commune = $_POST['commune'];
+    $date_collecte = date("Y-m-d");
+    $numero_facture = $_POST['numero_facture'];
+    $projet = $_POST["projet"];
+    $montant = str_replace(' ', '', $_POST['montant']);
+    $date = date("Y-m-d");
+
+    // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
+
+    // Exécutez la requête d'insertion avec des requêtes préparées
+    $insertSQL = "INSERT INTO ".$database_connect_prefix."decaissement_activite 
+                  (annee_act, id_activite, source_financement, commune, date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) 
+                  VALUES (:annee_act, :id_activite, :source_financement, :commune, :date_collecte, :statut, :montant, :numero_facture, :projet, :date, :personnel)";
+
+    // Utilisez la connexion à la base de données pour exécuter la requête
+    try {
+        $stmt = $pdar_connexion->prepare($insertSQL);
+
+        // Liaison des paramètres
+        $stmt->bindParam(':annee_act', $annee_act, PDO::PARAM_INT);
+        $stmt->bindParam(':id_activite', $id_activite, PDO::PARAM_STR);
+        $stmt->bindParam(':source_financement', $source_financement, PDO::PARAM_STR);
+        $stmt->bindParam(':commune', $commune, PDO::PARAM_STR);
+        $stmt->bindParam(':date_collecte', $date_collecte, PDO::PARAM_STR);
+        $stmt->bindParam(':statut', $statut, PDO::PARAM_STR);
+        $stmt->bindParam(':montant', $montant, PDO::PARAM_INT);
+        $stmt->bindParam(':numero_facture', $numero_facture, PDO::PARAM_STR);
+        $stmt->bindParam(':projet', $projet, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
+
+        // Exécution de la requête
+        $stmt->execute();
+
+        $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
+        header(sprintf("Location: %s?insert=ok", $insertGoTo));
+        exit();
+    } catch (Exception $e) {
+        die(mysql_error_show_message($e));
+    }
+} else {
+    echo "Requête non valide.";
+}
 ?>
 
 
@@ -57,7 +107,7 @@ include_once $config->sys_folder . "/database/db_connexion.php";
     <input type="hidden" id="projet" name="projet" value="">
     
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" onclick="updateDecaissementStatus()">Enregistrer</button>
+        <button type="submit" class="btn btn-primary" onclick="insertDecaissementData()">Enregistrer</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
     </div>
 </form>
@@ -72,55 +122,6 @@ include_once $config->sys_folder . "/database/db_connexion.php";
 }, function() {
   $(this).css('cursor', 'auto');
 });
-
-
-        
-
-// Fonction pour mettre à jour le statut du décaissement
-function updateDecaissementStatus() {
-    var decaissementId = $('#decaissementId').val();
-    var statut = $('[name="statut"]:checked').val();
-    $('.statut-radio[value="' + statut + '"]').prop('checked', true);
-    var commune = $('#commune').val();
-    var montant = $('#montant').val();
-    var projet = $('#projet').val();
-    var annee_act = $('#annee_act').val();
-    var id_activite = $('#id_activite').val();
-    var source_financement = $('#source_financement').val();
-    var date_collecte = $('#date_collecte').val();
-    var numero_facture = $('#numero_facture').val();
-    
-    
-    console.log("showDecaissementPopup called with id on  widget:", decaissementId, "statut:", statut, "montant:", montant, "annee_act:", annee_act, "id_activité:", id_activite, "source_financement:", source_financement, "commune : ", commune, "date_collecte: ", date_collecte, "numero_facture:", numero_facture, "projet:", projet );
-    // Envoyer ces données au serveur (vous devrez créer une page PHP pour gérer cela)
-    $.ajax({
-        type: 'POST',
-        url: 'suivi_decaissement_ptba.php', // Page PHP pour mettre à jour le statut du décaissement
-        data: {
-            decaissementId: decaissementId,
-           montant:montant,
-            statut: statut,
-            annee_act : annee_act,
-            id_activite : id_activite,
-            source_financement : source_financement,
-            commune : commune,
-            date_collecte : date_collecte,
-            numero_facture : numero_facture,
-            projet : projet
-        },
-        success: function(response) {
-            // Gérer la réponse du serveur
-            alert('Statut du décaissement mis à jour avec succès.');
-            $('#decaissementPopup').modal('hide'); // Fermer le pop-up après la mise à jour
-        },
-        error: function() {
-            alert('Une erreur s\'est produite lors de la mise à jour du statut du décaissement.');
-        }
-    });
-}
-
- 
-
 
 
 
@@ -144,6 +145,7 @@ function updateDecaissementStatus() {
         data: {
             decaissementId: decaissementId,
             statut: statut,
+            montant:montant,
             annee_act : annee_act,
             id_activite : id_activite,
             source_financement : source_financement,
@@ -166,8 +168,8 @@ function updateDecaissementStatus() {
 
 // Événement de clic pour le bouton Enregistrer dans le pop-up
 $('#saveButton').click(function() {
-    updateDecaissementStatus();
-    // insertDecaissementData();
+    // updateDecaissementStatus();
+    insertDecaissementData();
 });
 </script>
 
