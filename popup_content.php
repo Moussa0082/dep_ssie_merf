@@ -1,17 +1,28 @@
+
 <?php
 session_start();
 
 include_once 'system/configuration.php';
 $config = new Config;
+include_once $config->sys_folder . "/database/db_connexion.php";
 
 if (!isset ($_SESSION["clp_id"])) {
   //header(sprintf("Location: %s", "./"));
   exit;
 }
 
-include_once $config->sys_folder . "/database/db_connexion.php";
+global $id_act;
+global $code_act;
+global $annee;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if(isset($_GET['id_act'])) { $id_act =$code_act = intval($_GET['id_act']); }
+
+if(isset($_GET['annee'])) {$annee=intval($_GET['annee']);} else $annee=date("Y");
+
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $decaissementId = $_POST['decaissementId'];
     $statut = $_POST['statut'];
     $annee_act = $_POST['annee_act'];
@@ -51,17 +62,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Exécution de la requête
         $stmt->execute();
 
-        $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
-        header(sprintf("Location: %s?insert=ok", $insertGoTo));
-        exit();
     } catch (Exception $e) {
         die(mysql_error_show_message($e));
     }
-} else {
-    echo "Requête non valide.";
-}
+    
+    // $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
+    // if ($stmt) $insertGoTo .= "?insert=ok"; else $insertGoTo .= "?insert=no";
+    // header(sprintf("Location: %s", $insertGoTo));  exit();
+} 
 ?>
-
 
 <!-- popup_content.php -->
 <div id="decaissementPopup" class="modal fade" role="dialog">
@@ -73,48 +82,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h4 class="modal-title">Modifier le statut du décaissement</h4>
             </div>
             <div class="modal-body">
-              
-            <form id="decaissementForm">
-    <div class="form-group">
-        <label for="montant" class="col-md-3 control-label">Montant</label>
-        <div class="col-md-9">
-            <input type="text" class="form-control" id="montant" name="montant" readonly>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Statut</label>
-        <div>
-            <label>
-                <input type="radio" class="popup-trigger" name="statut" value="0" > Engagé
-            </label>
-            <label>
-                <input type="radio" class="popup-trigger" name="statut" value="1" > Ordonnancé
-            </label>
-            <label>
-                <input type="radio" class="popup-trigger" name="statut" value="2" > Réalisé
-            </label>
-        </div>
-    </div>
-
-    <input type="hidden" id="decaissementId" name="decaissementId" value="">
-    <input type="hidden" id="annee_act" name="annee_act" value="">
-    <input type="hidden" id="id_activite" name="id_activite" value="">
-    <input type="hidden" id="commune" name="commune" value="">
-    <input type="hidden" id="source_financement" name="source_financement" value="">
-    <input type="hidden" id="date_collecte" name="date_collecte" value="">
-    <input type="hidden" id="numero_facture" name="numero_facture" value="">
-    <input type="hidden" id="projet" name="projet" value="">
-    
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" onclick="insertDecaissementData()">Enregistrer</button>
+                
+                <form id="decaissementForm" action="popup_content.php" method="POST">
+                    <div class="form-group">
+                        <label for="montant" class="col-md-3 control-label">Montant</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="montant" name="montant" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <div>
+                            <label>
+                                <input type="radio" class="popup-trigger" name="statut" value="0" > Engagé
+                            </label>
+                            <label>
+                                <input type="radio" class="popup-trigger" name="statut" value="1" > Ordonnancé
+                            </label>
+                            <label>
+                                <input type="radio" class="popup-trigger" name="statut" value="2" > Réalisé
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="decaissementId" name="decaissementId" value="">
+                    <input type="hidden" id="annee_act" name="annee_act" value="">
+                    <input type="hidden" id="id_activite" name="id_activite" value="">
+                    <input type="hidden" id="commune" name="commune" value="">
+                    <input type="hidden" id="source_financement" name="source_financement" value="">
+                    <input type="hidden" id="date_collecte" name="date_collecte" value="">
+                    <input type="hidden" id="numero_facture" name="numero_facture" value="">
+                    <input type="hidden" id="projet" name="projet" value="">
+                    
+                    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="saveButton" name="envoyer"  >Enregistrer</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
     </div>
 </form>
-            </div>
-        </div>
-    </div>
 </div>
+</div>
+</div>
+</div>
+<!-- popup_content.php -->
+
+
+
 
 <script>
     $('.popup-trigger').hover(function() {
@@ -126,51 +139,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    function insertDecaissementData() {
-        var decaissementId = $('#decaissementId').val();
-    var statut = $('[name="statut"]:checked').val();
-    $('.statut-radio[value="' + statut + '"]').prop('checked', true);
-    var commune = $('#commune').val();
-    var montant = $('#montant').val();
-    var projet = $('#projet').val();
-    var annee_act = $('#annee_act').val();
-    var id_activite = $('#id_activite').val();
-    var source_financement = $('#source_financement').val();
-    var date_collecte = $('#date_collecte').val();
-    var numero_facture = $('#numero_facture').val();
+//     function insertDecaissementData() {
+//         var decaissementId = $('#decaissementId').val();
+//     var statut = $('[name="statut"]:checked').val();
+//     $('.statut-radio[value="' + statut + '"]').prop('checked', true);
+//     var commune = $('#commune').val();
+//     var montant = $('#montant').val();
+//     var projet = $('#projet').val();
+//     var annee_act = $('#annee_act').val();
+//     var id_activite = $('#id_activite').val();
+//     var source_financement = $('#source_financement').val();
+//     var date_collecte = $('#date_collecte').val();
+//     var numero_facture = $('#numero_facture').val();
 
-    $.ajax({
-        type: 'POST',
-        url: 'popup_content.php', // Assurez-vous d'avoir une page pour l'insertion
-        data: {
-            decaissementId: decaissementId,
-            statut: statut,
-            montant:montant,
-            annee_act : annee_act,
-            id_activite : id_activite,
-            source_financement : source_financement,
-            commune : commune,
-            date_collecte : date_collecte,
-            numero_facture : numero_facture,
-            projet : projet
-        },
-        success: function(response) {
-            alert('Données du décaissement insérées avec succès.');
-            $('#decaissementPopup').modal('hide');
-        },
-        error: function() {
-            alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
-        }
-    });
-}
+//     $.ajax({
+//         type: 'POST',
+//         url: 'popup_content.php', // Assurez-vous d'avoir une page pour l'insertion
+//         data: {
+//             decaissementId: decaissementId,
+//             statut: statut,
+//             montant:montant,
+//             annee_act : annee_act,
+//             id_activite : id_activite,
+//             source_financement : source_financement,
+//             commune : commune,
+//             date_collecte : date_collecte,
+//             numero_facture : numero_facture,
+//             projet : projet
+//         },
+//         success: function(response) {
+//             alert('Données du décaissement insérées avec succès.');
+//             $('#decaissementPopup').modal('hide');
+//         },
+//         error: function() {
+//             alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
+//         }
+//     });
+// }
 
-  
 
-// Événement de clic pour le bouton Enregistrer dans le pop-up
-$('#saveButton').click(function() {
-    // updateDecaissementStatus();
-    insertDecaissementData();
-});
+
+// Événement de clic pour le bouton Enregistrer dans le pop-up et fermer le pop up
+
 </script>
+
+
+
+<script>
+    $(document).ready(function() {
+        // Événement de clic pour le bouton Enregistrer dans le pop-up
+        $('#saveButton').click(function(e) {
+            e.preventDefault(); // Empêcher le comportement par défaut du formulaire
+
+            // Collecter les données du formulaire
+            var formData = $('#decaissementForm').serialize();
+
+            // Envoyer les données au serveur via Ajax
+            $.ajax({
+                type: 'POST',
+                url: 'popup_content.php', // URL du script de traitement PHP
+                data: formData,
+                success: function(response) {
+                    $('#decaissementPopup').modal('hide');
+                    // alert('Données du décaissement insérées avec succès.');
+                },
+                error: function() {
+                    alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
+                    $('#decaissementPopup').modal('hide');
+                }
+            });
+        });
+
+        // ... (autre code)
+    });
+</script>
+
 
 <!-- method="POST" action="popup_content.php" -->

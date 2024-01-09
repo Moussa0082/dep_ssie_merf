@@ -8,7 +8,7 @@ include_once 'system/configuration.php';
 $config = new Config;
 
 if (!isset ($_SESSION["clp_id"])) {
-  //header(sprintf("Location: %s", "./"));
+  header(sprintf("Location: %s", "./"));
   exit;
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
@@ -17,12 +17,19 @@ include_once $config->sys_folder . "/database/db_connexion.php";
 
 if(isset($_GET['id_ind'])) $id_ind = $_GET['id_ind']; else $id_ind=0;// || $_GET['ad_sta'];
 
+global $annee;
+
 if(isset($_GET['annee'])) {$annee=intval($_GET['annee']);} else $annee=date("Y");
 
 //if(isset($_GET['id_act'])) { $id_act = $_GET['id_act']; }
 
-if(isset($_GET['id_act'])) { $id_act =$code_act = $_GET['id_act']; }
 
+global $id_act;
+global $code_act;
+
+if(isset($_GET['id_act'])) { 
+  $id_act = $code_act = intval($_GET['id_act']); 
+}
 $page1="";
 
 if(isset($_GET['cmp'])) $cmp = $_GET["cmp"];
@@ -44,9 +51,61 @@ if ((isset($_GET["id_sup_mission"]) && !empty($_GET["id_sup_mission"]))) {
     $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
   if ($Result1) $insertGoTo .= "?del=ok"; else $insertGoTo .= "?del=no";
   header(sprintf("Location: %s", $insertGoTo)); exit();
+
 }
   
   // echo "je suis la";   exit;
+
+  if (isset($_POST['envoyer']))  {
+    $decaissementId = $_POST['decaissementId'];
+    $statut = $_POST['statut'];
+    $annee_act = $_POST['annee_act'];
+    $id_activite = $_POST['id_activite'];
+    $source_financement = $_POST['source_financement'];
+    $commune = $_POST['commune'];
+    $date_collecte = date("Y-m-d");
+    $numero_facture = $_POST['numero_facture'];
+    $projet = $_POST["projet"];
+    $montant = str_replace(' ', '', $_POST['montant']);
+    $date = date("Y-m-d");
+    // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
+
+    // Exécutez la requête d'insertion avec des requêtes préparées
+    $insertSQL = "INSERT INTO ".$database_connect_prefix."decaissement_activite 
+                  (annee_act, id_activite, source_financement, commune, date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) 
+                  VALUES (:annee_act, :id_activite, :source_financement, :commune, :date_collecte, :statut, :montant, :numero_facture, :projet, :date, :personnel)";
+
+    // Utilisez la connexion à la base de données pour exécuter la requête
+    try {
+        $stmt = $pdar_connexion->prepare($insertSQL);
+
+        // Liaison des paramètres
+        $stmt->bindParam(':annee_act', $annee_act, PDO::PARAM_INT);
+        $stmt->bindParam(':id_activite', $id_activite, PDO::PARAM_STR);
+        $stmt->bindParam(':source_financement', $source_financement, PDO::PARAM_STR);
+        $stmt->bindParam(':commune', $commune, PDO::PARAM_STR);
+        $stmt->bindParam(':date_collecte', $date_collecte, PDO::PARAM_STR);
+        $stmt->bindParam(':statut', $statut, PDO::PARAM_STR);
+        $stmt->bindParam(':montant', $montant, PDO::PARAM_INT);
+        $stmt->bindParam(':numero_facture', $numero_facture, PDO::PARAM_STR);
+        $stmt->bindParam(':projet', $projet, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
+
+        // Exécution de la requête
+        
+        $stmt->execute();
+
+            // corrige ici apres linsertion je suis sur la meme page ici le pop up est fermer mais le tableau est vide je suis dans la condition else comme si ya rien dans le tableau dans cette meme page en bas 
+    } catch (Exception $e) {
+        die(mysql_error_show_message($e));
+    }
+    // $insertGoTo = $_SERVER['PHP_SELF'] . "?id_act=$id_act&code_act=$code_act&annee=$annee";
+    // if ($stmt) $insertGoTo .= "&insert=ok"; else $insertGoTo .= "&insert=no";   {
+    //   header(sprintf("Location: %s", $insertGoTo));
+    // }       
+
+   } 
                                          
 if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
 { //Fonction
@@ -169,18 +228,36 @@ if(isset($_GET["id"]) && !empty($_GET["id"]))
 else
 {                  //where projet='".$_SESSION["clp_projet"]."'
   //Mission supervision
-  $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite = $id_act AND annee_act = $annee ORDER BY date_collecte DESC, commune DESC";
-  try{
-    $liste_mission1 = $pdar_connexion->prepare($query_liste_mission);
-    $liste_mission1->execute();
-    $row_liste_mission1 = $liste_mission1 ->fetchAll();
-    $totalRows_liste_mission1 = $liste_mission1->rowCount();
-	}catch(Exception $e){ die(mysql_error_show_message($e)); }
+  if (isset($_GET['id_act'])) {
+    $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite = $id_act AND annee_act = $annee ORDER BY date_collecte ASC, commune DESC ";
+    // $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite = $id_act AND annee_act = $annee ORDER BY date_collecte ASC, commune DESC";
+    try {
+        $liste_mission1 = $pdar_connexion->prepare($query_liste_mission);
+        $liste_mission1->execute();
+        $row_liste_mission1 = $liste_mission1->fetchAll();
+        $totalRows_liste_mission1 = $liste_mission1->rowCount();
+    } catch (Exception $e) {
+        die(mysql_error_show_message($e));
+    }
+} else {
+    // Gérer le cas où $id_act n'est pas défini
+    echo "Erreur : id_act n'est pas défini.";
+    exit;
+}
+
+  // $query_liste_mission = "SELECT * FROM ".$database_connect_prefix."decaissement_activite WHERE id_activite = $id_act AND annee_act = $annee ORDER BY date_collecte ASC, commune DESC";
+  // try{
+  //   $liste_mission1 = $pdar_connexion->prepare($query_liste_mission);
+  //   $liste_mission1->execute();
+  //   $row_liste_mission1 = $liste_mission1 ->fetchAll();
+  //   $totalRows_liste_mission1 = $liste_mission1->rowCount();
+	// }catch(Exception $e){ die(mysql_error_show_message($e)); }
 }
 
 // Exemple de requête pour récupérer les partenaires depuis la table "partenaire"
 // $query_partenaires = "SELECT id_partenaire, sigle FROM partenaire";
 $query_partenaires =  "SELECT * FROM ".$database_connect_prefix."partenaire where code in (select bailleur from ".$database_connect_prefix."type_part WHERE projet='".$_SESSION["clp_projet"]."')";
+
 $result_partenaires = $pdar_connexion->query($query_partenaires);
 // Vérifiez si la requête a réussi
 if ($result_partenaires) {
@@ -335,6 +412,7 @@ $(document).ready(function() {
  <div class="widget-header"> <h4><i class="icon-reorder"></i> Suivi du d&eacute;caissement</h4>
    <?php if(isset($_SESSION['clp_niveau']) && $_SESSION['clp_niveau']==0){ ?>
 <?php echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&add=1","Nouveau d&eacute;caissement","<i class='icon-plus'> Nouveau d&eacute;caissement </i>","simple","./","pull-right p11","",0,"","plan_ptba.php"); ?>
+<?php echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&addd=1","Nouveau d&eacute;caissement","<i class='icon-plus'> Nouveau d&eacute;caissement </i>","simple","./","pull-right p11","",0,"","popup_content.php"); ?>
 <?php } ?>
 </div>
 <div class="widget-content" style="width:100%;">
@@ -350,56 +428,59 @@ $(document).ready(function() {
                   <td><strong>Ordonnancé </br>(F CFA) </strong></td>
                   <td><strong>Décaissé </br>(F CFA) </strong></td>
                   <td><div align="left"><strong>Documents</strong></div></td>
-                  <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
+                  <?php if(isset($_SESSION['clp_id']) && ($_SESSION['clp_id']=='admin')) { ?>
+                  <td align="center" width="90" ><strong>Editer</strong></td>
+                  <?php } ?>
+                  <?php if(isset($_SESSION['clp_id']) && ($_SESSION['clp_id']=='admin')) { ?>
                   <td align="center" width="90" ><strong>Actions</strong></td>
                   <?php } ?>
                 </tr>
             </thead>
-                <?php $totaldecmaep=$totaldec=0; if($totalRows_liste_mission1>0) {$i=0;  foreach($row_liste_mission1 as $row_liste_mission1){  $id = $row_liste_mission1['id_decaissement']; ?>
+                <?php $totaldecmaep=$totaldec=0; if($totalRows_liste_mission1>0) {$i=0;  foreach($row_liste_mission1 as $row){  $id = $row['id_decaissement']; ?>
                 <tr >
-                  <td ><div align="center"><?php echo $row_liste_mission1['source_financement']; ?></div></td>
-                  <td><div align="left"><?php if(isset( $departement_array[$row_liste_mission1['commune']])) echo  $departement_array[$row_liste_mission1['commune']]; ?></div></td>
-                  <td><div align="left"><?php echo date_reg($row_liste_mission1['date_collecte'],"/"); ?></div></td>
+                  <td ><div align="center"><?php echo $row['source_financement']; ?></div></td>
+                  <td><div align="left"><?php if(isset( $departement_array[$row['commune']])) echo  $departement_array[$row['commune']]; ?></div></td>
+                  <td><div align="left"><?php echo date_reg($row['date_collecte'],"/"); ?></div></td>
                      <!-- debut montant en fonction du libéllé choisi -->
    
     <!-- foul b -->
-    <td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
-data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
-    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
-    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
-    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
- data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
+    <td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row['id_decaissement']; ?>"
+data-annee_act="<?php echo $row['annee_act']; ?>" data-id_activite="<?php echo $row['id_activite']; ?>" 
+    data-source_financement="<?php echo $row['source_financement']; ?>" data-commune="<?php echo $row['commune']; ?>"
+    data-date_collecte="<?php echo $row['date_collecte']; ?>" data-numero_facture="<?php echo $row['numero_facture']; ?>"
+    data-projet="<?php echo $row['projet']; ?>"
+ data-statut="<?php echo $row['statut']; ?>"   data-montant="<?php echo $row['cout_realise']; ?>">
 
     <div align="right">
-        <?php if($row_liste_mission1['statut'] == 0) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+        <?php if($row['statut'] == 0) echo number_format($row['cout_realise'], 0, ',', ' '); ?>
     </div>
 </td>
 
-<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
-data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
-    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
-    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
-    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
- data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
- <?php if($row_liste_mission1['statut'] == 1) echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' '); ?>
+<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row['id_decaissement']; ?>"
+data-annee_act="<?php echo $row['annee_act']; ?>" data-id_activite="<?php echo $row['id_activite']; ?>" 
+    data-source_financement="<?php echo $row['source_financement']; ?>" data-commune="<?php echo $row['commune']; ?>"
+    data-date_collecte="<?php echo $row['date_collecte']; ?>" data-numero_facture="<?php echo $row['numero_facture']; ?>"
+    data-projet="<?php echo $row['projet']; ?>"
+ data-statut="<?php echo $row['statut']; ?>"   data-montant="<?php echo $row['cout_realise']; ?>">
+ <?php if($row['statut'] == 1) echo number_format($row['cout_realise'], 0, ',', ' '); ?>
    
     </div>
 </td>
 
 <!-- ordonnancer -->
-<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row_liste_mission1['id_decaissement']; ?>"
-data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activite="<?php echo $row_liste_mission1['id_activite']; ?>" 
-    data-source_financement="<?php echo $row_liste_mission1['source_financement']; ?>" data-commune="<?php echo $row_liste_mission1['commune']; ?>"
-    data-date_collecte="<?php echo $row_liste_mission1['date_collecte']; ?>" data-numero_facture="<?php echo $row_liste_mission1['numero_facture']; ?>"
-    data-projet="<?php echo $row_liste_mission1['projet']; ?>"
- data-statut="<?php echo $row_liste_mission1['statut']; ?>"   data-montant="<?php echo $row_liste_mission1['cout_realise']; ?>">
+<td nowrap="nowrap" class="popup-trigger statut-column" data-id="<?php echo $row['id_decaissement']; ?>"
+data-annee_act="<?php echo $row['annee_act']; ?>" data-id_activite="<?php echo $row['id_activite']; ?>" 
+    data-source_financement="<?php echo $row['source_financement']; ?>" data-commune="<?php echo $row['commune']; ?>"
+    data-date_collecte="<?php echo $row['date_collecte']; ?>" data-numero_facture="<?php echo $row['numero_facture']; ?>"
+    data-projet="<?php echo $row['projet']; ?>"
+ data-statut="<?php echo $row['statut']; ?>"   data-montant="<?php echo $row['cout_realise']; ?>">
     <div align="right">
     <div align="right">
-        <?php if($row_liste_mission1['statut'] == 2) {
-            echo number_format($row_liste_mission1['cout_realise'], 0, ',', ' ');
-            $totaldec = $totaldec + $row_liste_mission1['cout_realise'];
-            if(isset($row_liste_mission1['cout_maep'])) {
-                $totaldecmaep = $totaldecmaep + $row_liste_mission1['cout_maep'];
+        <?php if($row['statut'] == 2) {
+            echo number_format($row['cout_realise'], 0, ',', ' ');
+            $totaldec = $totaldec + $row['cout_realise'];
+            if(isset($row['cout_maep'])) {
+                $totaldecmaep = $totaldecmaep + $row['cout_maep'];
             }
         } ?>
     </div>
@@ -411,25 +492,46 @@ data-annee_act="<?php echo $row_liste_mission1['annee_act']; ?>" data-id_activit
     <!-- fin montant -->
 
                   <td><div align="left">
-<?php $titre = "Ajouter"; $titre1 = "Ajout"; if(isset($row_liste_mission1["document"]) && !empty($row_liste_mission1["document"])){ $a = explode("|",$row_liste_mission1["document"]); $j=1; foreach($a as $file){ if(file_exists($file)){ $name = substr(strrchr($file, "/"), 1); echo "<a href='./download_file.php?file=".$file."' title='".$name."' style='display:block;' >Fichier ".$j."</a>"; $j++; } } $titre = "Modifier"; $titre1 = "Modification"; } ?>
+<?php $titre = "Ajouter"; $titre1 = "Ajout"; if(isset($row["document"]) && !empty($row["document"])){ $a = explode("|",$row_liste_mission1["document"]); $j=1; foreach($a as $file){ if(file_exists($file)){ $name = substr(strrchr($file, "/"), 1); echo "<a href='./download_file.php?file=".$file."' title='".$name."' style='display:block;' >Fichier ".$j."</a>"; $j++; } } $titre = "Modifier"; $titre1 = "Modification"; } ?>
 <div align="center">
 <?php
 //echo do_link("",$_SERVER['PHP_SELF']."?id=$id&document=1","$titre1 de document de mission","$titre","simple","./","","",0,"","mission_supervision.php");
 echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'plan_ptba.php');
 ?>
                   </div></td>
+                  <!-- test  -->
+                  <td><div align="left">
+<?php $titre = "Ajouter"; $titre1 = "Ajout"; if(isset($row["cout_realise"]) && !empty($row["cout_realise"])){
+   $a = explode("|",$row_liste_mission1["document"]);
+    $j=1; foreach($a as $file){ if(file_exists($file)){
+       $name = substr(strrchr($file, "/"), 1);
+        echo "<a href='./download_file.php?file=".$file."' title='".$name."' style='display:block;' >Fichier ".$j."</a>"; $j++;
+         } 
+         }
+          $titre = "Modifier"; $titre1 = "Modification"; 
+          } 
+          ?>
+<div align="center">
+<?php
+//echo do_link("",$_SERVER['PHP_SELF']."?id=$id&document=1","$titre1 de document de mission","$titre","simple","./","","",0,"","mission_supervision.php");
+echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'plan_ptba.php');
+?>
+                  </div></td>
+                  <!-- fin test  -->
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
 <td align="center" nowrap="nowrap" class=" ">
 <?php
 echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
 
-echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id_sup_mission=".$id,"Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer cette d&eacute;pense ?');",0,"margin:0px 5px;",'plan_ptba.php');
+// echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&addd=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'popup_content.php');
+//echo do_link("",$_SERVER['PHP_SELF']."?id=$id&document=1","$titre1 de document de mission","$titre","simple","./","","",0,"","mission_supervision.php");
+echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'popup_content.php');
 ?></td>
 <?php } ?>
 	    </tr>
                 <?php }  ?>
 	
-                <?php }else{ ?>
+                <?php } else{ ?>
                  <tr> <td colspan="7"><h4 align="center">Aucun d&eacute;caissement effectu&eacute; !</h4></td>  </tr>
                 <?php } ?>
 							 <tr> <td colspan="6"><td/>  </tr>
@@ -438,6 +540,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 				    <td colspan="2" bgcolor="#F0F0F0"><div align="right"><strong>&nbsp;&nbsp; </strong></div></td>
 				    <td nowrap="nowrap" bgcolor="#F0F0F0"><div align="center"></div></td>
 				  </tr>
+
 				  <tr>
 				    <td><div align="right"><strong>Total Pr&eacute;vu </strong></div></td>
 				    <td nowrap="nowrap"><div align="center"><?php echo number_format($financement_total, 0, ',', ' '); ?></div></td>
@@ -495,6 +598,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
 <a href="<?php echo $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee"; ?>" class="pull-right p11" title="Annuler" >Annuler </a>
 </div>
 <div class="widget-content">
+
 <form action="" class="form-horizontal row-border" method="post" enctype="multipart/form-data" name="form3" id="form3" novalidate="novalidate">
 <table border="0" id="mtable" align="center" cellspacing="1" cellpadding="0" width="100%" style="font-size:14px;">
      
@@ -566,7 +670,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
       <td><div class="form-group">
           <label for="numero_facture" class="col-md-3 control-label">Référence de l'Opération <span class="required">*</span></label>
           <div class="col-md-9">
-<input name="numero_facture" type="text" class="form-control required" id="numero_facture" value="<?php echo isset($row_liste_mission['numero_facture'])?$row_liste_mission['numero_facture']: $matricule; ?>" />
+<input name="numero_facture" type="text" class="form-control required" id="numero_facture" value="<?php echo isset($row_liste_mission['numero_facture'])?$row_liste_mission['numero_facture'] : " "; ?>" />
           </div>
         </div>  </td>
     </tr>
@@ -586,6 +690,7 @@ echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$
           </td>
     </tr>
 </table>
+
 <div class="form-actions">
 <?php if(isset($_GET["id"])){ ?>
   <input type="hidden" name="id" value="<?php echo ($_GET["id"]); ?>" />
@@ -635,7 +740,7 @@ elseif($taux_progressc>=70) $color = "success";
   $("#label1c_<?php echo $id_act; ?>", window.parent.document).html('<div class="progress"> <div class="progress-bar progress-bar-<?php echo $color; ?>" style="width:<?php echo number_format($percentc, 0, ',', ' '); ?>%"><?php echo (((isset($taux_progressc) && $taux_progressc>0))?number_format($taux_progressc, 0, ',', ' ')." %":"Suivre"); ?></div> </div>');
 
   // Mettre à jour le localStorage
-  localStorage.setItem('rate_' + <?php echo $id_act; ?>, <?php echo $taux_progressc; ?>);
+  // localStorage.setItem('rate_' + <?php echo $id_act; ?>, <?php echo $taux_progressc; ?>);
 });
 
           
@@ -681,117 +786,75 @@ $('.popup-trigger').hover(function() {
   $(this).css('cursor', 'auto');
 });
 
-    $(document).ready(function() {
-        // Fonction pour initialiser et afficher le pop-up
-        function showDecaissementPopup(decaissementId, statut, montant, commune , annee_act, id_activite, source_financement,  date_collecte, numero_facture, projet) {
-            // Définir les valeurs par défaut des boutons radio et du montant
-            // annee_act, id_activite, source_financement, commune,  date_collecte,
-            $('input[name="statut"][value="' + statut + '"]').prop('checked', true);
-            $('#decaissementId').val(decaissementId);
-            $('#montant').val(montant);
-            $('#commune').val(commune);
-            $('#annee_act').val(annee_act);
-            $('#id_activite').val(id_activite);
-            $('#source_financement').val(source_financement);
-            $('#date_collecte').val(date_collecte);
-            $('#numero_facture').val(numero_facture);
-            $('#projet').val(projet);
-// Utiliser toLocaleString pour formater le montant
-// $('#montant').val(parseInt(montant).toLocaleString());
-
-            console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant);
-            
-            // Afficher le pop-up
-            $('#decaissementPopup').modal('show');
-          }
           
         // Événement de clic pour afficher le pop-up lorsqu'on clique sur les cellules spécifiques
-        $('.popup-trigger').click(function() {
-            var decaissementId = $(this).data('id');
-            var statut = $(this).data('statut');
-            var montant = $(this).data('montant');
-            var annee_act = $(this).data('annee_act');
-            var id_activite = $(this).data('id_activite');
-            var source_financement = $(this).data('source_financement');
-            var commune = $(this).data('commune');
-            var date_collecte = $(this).data('date_collecte');
-            var numero_facture = $(this).data('numero_facture');
-            var projet = $(this).data('projet');
+  $(document).ready(function () {
+    // Fonction pour initialiser et afficher le pop-up
+    function showDecaissementPopup(decaissementId, statut, montant, commune, annee_act, id_activite, source_financement, date_collecte, numero_facture, projet) {
+        // Définir les valeurs par défaut des boutons radio et du montant
+        $('input[name="statut"][value="' + statut + '"]').prop('checked', true);
+        $('#decaissementId').val(decaissementId);
+        $('#montant').val(montant);
+        $('#commune').val(commune);
+        $('#annee_act').val(annee_act);
+        $('#id_activite').val(id_activite);
+        $('#source_financement').val(source_financement);
+        $('#date_collecte').val(date_collecte);
+        $('#numero_facture').val(numero_facture);
+        $('#projet').val(projet);
 
-            // Affiche les données dans la console pour déboguer
-    console.log("Decaissement ID:", decaissementId);
-    console.log("Statut:", statut);
-    console.log("Montant:", montant);
-    console.log("Année act :", annee_act);
-    console.log("Id_activité :", id_activite);
-    console.log("source_financement :", source_financement);
-    console.log("commune :", commune);
-    console.log("date_collecte :", date_collecte);
-    console.log("numero_facture :", numero_facture);
-    console.log("projet :", projet);
-            
-    function insertDecaissementData() {
-    var decaissementId = $('#decaissementId').val();
-    var statut = $('[name="statut"]:checked').val();
-    // Ajoutez d'autres données si nécessaire
+        // Afficher le pop-up
+        $('#decaissementPopup').modal('show');
+    }
 
-    $.ajax({
-        type: 'POST',
-        url: 'popup_content.php', // Assurez-vous d'avoir une page pour l'insertion
-        data: {
-            decaissementId: decaissementId,
-            statut: statut,
-            annee_act : annee_act,
-            id_activite : id_activite,
-            source_financement : source_financement,
-            commune : commune,
-            date_collecte : date_collecte,
-            numero_facture : numero_facture,
-            projet : projet
-        },
-        success: function(response) {
-            alert('Données du décaissement insérées avec succès.');
-            $('#decaissementPopup').modal('hide');
-        },
-        error: function() {
-            alert('Une erreur s\'est produite lors de l\'insertion des données du décaissement.');
-        }
-    });
-}
+    // Événement de clic pour afficher le pop-up lorsqu'on clique sur les cellules spécifiques
+    $('.popup-trigger').click(function () {
+        var decaissementId = $(this).data('id');
+        var statut = $(this).data('statut');
+        var montant = $(this).data('montant');
+        var annee_act = $(this).data('annee_act');
+        var id_activite = $(this).data('id_activite');
+        var source_financement = $(this).data('source_financement');
+        var commune = $(this).data('commune');
+        var date_collecte = $(this).data('date_collecte');
+        var numero_facture = $(this).data('numero_facture');
+        var projet = $(this).data('projet');
 
-            
-            // function updateVisibility() {
-        //     var selectedStatut = $('input[name="statut"]:checked').val();
-
-        //     // Masquer tous les éléments
-        //     $('[data-statut]').hide();
-
-        //     // Afficher les éléments correspondants au statut sélectionné
-        //     $('[data-statut="' + selectedStatut + '"]').show();
-        // }
-        
-        // // Appeler la fonction lors du chargement de la page
-        // updateVisibility();
-        
-        
-            console.log("showDecaissementPopup called with id:", decaissementId, "statut:", statut, "montant:", montant, "annee_act:", annee_act, "id_activité:", id_activite, "source_financement:", source_financement, "commune : ", commune, "date_collecte: ", date_collecte, "numero_facture:", numero_facture, "projet:", projet );
         // Charger le contenu du pop-up via AJAX
         $.ajax({
-          url: 'popup_content.php',
-                type: 'GET',
-                success: function(response) {
-                  // Insérer le contenu du pop-up dans votre page actuelle
-                    $('body').append(response);
-                    // Mettre à jour le contenu du pop-up avec les données nécessaires
-                    // (par exemple, le montant et le statut)
-                    showDecaissementPopup(decaissementId, statut, montant, commune , annee_act, id_activite, source_financement,  date_collecte, numero_facture, projet);
-                  },
-                error: function() {
-                    console.error('Erreur lors du chargement du pop-up.');
-                }
-            });
+            url: 'popup_content.php',
+            type: 'GET',
+            success: function (response) {
+                // Insérer le contenu du pop-up dans votre page actuelle
+                $('body').append(response);
+                // Mettre à jour le contenu du pop-up avec les données nécessaires
+                // (par exemple, le montant et le statut)
+                showDecaissementPopup(decaissementId, statut, montant, commune, annee_act, id_activite, source_financement, date_collecte, numero_facture, projet);
+            },
+            error: function () {
+                console.error('Erreur lors du chargement du pop-up.');
+            }
         });
+
+       
     });
+
+    
+});
+
+// $.ajax({
+//             url: 'popup_content.php',
+//             type: 'GET',
+//             success: function (response) {
+//                 // Insérer le contenu du pop-up dans votre page actuelle
+//                 $('#mtable').append(response);
+//                 // Mettre à jour le contenu du pop-up avec les données nécessaires
+//                 // (par exemple, le montant et le statut)
+//             },
+//             error: function () {
+//                 console.error('Erreur lors du chargement du pop-up.');
+//             }
+//         });
 
 
 </script>

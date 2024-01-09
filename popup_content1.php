@@ -9,9 +9,20 @@ if (!isset ($_SESSION["clp_id"])) {
   exit;
 }
 
+
 include_once $config->sys_folder . "/database/db_connexion.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+global $id_act;
+global $code_act;
+global $annee;
+
+if(isset($_GET['id_act'])) { $id_act = $code_act = $_GET['id_act']; }
+if(isset($_GET['annee'])) {$annee=intval($_GET['annee']);} else $annee=date("Y");
+
+
+if (isset($_POST['envoyer'])) {
     $decaissementId = $_POST['decaissementId'];
     $statut = $_POST['statut'];
     $annee_act = $_POST['annee_act'];
@@ -21,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date_collecte = date("Y-m-d");
     $numero_facture = $_POST['numero_facture'];
     $projet = $_POST["projet"];
-    $montant = $_POST['montant'];
+    $montant = str_replace(' ', '', $_POST['montant']);
     $date = date("Y-m-d");
 
     // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
@@ -51,13 +62,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Exécution de la requête
         $stmt->execute();
 
-        $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
-        header(sprintf("Location: %s?insert=ok", $insertGoTo));
         exit();
     } catch (Exception $e) {
         die(mysql_error_show_message($e));
     }
-} else {
-    echo "Requête non valide.";
-}
+    // $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
+    header("Location: suivi_decaissement_ptba.php");
+} 
 ?>
