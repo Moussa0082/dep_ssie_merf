@@ -44,13 +44,14 @@ if(!class_exists('Config')){
     include_once $path.$config->sys_folder."/database/db_connexion.php";
     $MENU = array(
     1 =>array("localites.php"=>"Localités","programmes_2qc.php"=>"Stratégies","projets.php"=>"Projets","fonctions.php"=>"Fonction","users.php"=>array("users.php"=>"Utilisateurs","fonctions.php"=>"Fonction"),"partenaires.php"=>"Acteurs clés","projets.php"=>"Projets MERF","groupes_travail.php"=>"Groupes de travail","cadre_sectoriel.php"=>"Domaines et thématiques","autres_parametres.php"=>"Autres paramètres"), 
-    2 => array("referentiel.php"=>"Indicateurs reférentiels","niveau_i3nn.php"=>"Niveaux sectoriel","indicateur_i3n.php"=>"Indicateurs sectoriels","niveau_cosop.php"=>"Cadre analytique","indicateur_cosop.php"=>"Indicateurs analytique","fiches_dynamiques.php"=>"Fiches dynamiques"),
-    3 => array("bailleurs.php"=>"Sources de financement","index.php"=>"Fiche des projets"/*,"suivi_indicateur_ptba.php"=>"Suivi du PTBA","plan_marche.php"=>"PPM","analyse_budgetaire.php"=>"Analyse budgetaire","gestion_contrat_prestation.php"=>"Contrats de prestation","gestion_decompte.php"=>"Décomptes"*/),
+    2 => array("tableau_consolide_ptba.php"=>"Tableau consolidé PTBA","tableau_suivi_consolide_ptba.php"=>"Tableau suivi consolidé PTBA"),
+    3 => array("referentiel.php"=>"Indicateurs reférentiels","niveau_i3nn.php"=>"Niveaux sectoriel","indicateur_i3n.php"=>"Indicateurs sectoriels", "niveau_cosop.php"=>"Cadre analytique","indicateur_cosop.php"=>"Indicateurs analytique","fiches_dynamiques.php"=>"Fiches dynamiques"),
+    4 => array("bailleurs.php"=>"Sources de financement","index.php"=>"Fiche des projets"/*,"suivi_indicateur_ptba.php"=>"Suivi du PTBA","plan_marche.php"=>"PPM","analyse_budgetaire.php"=>"Analyse budgetaire","gestion_contrat_prestation.php"=>"Contrats de prestation","gestion_decompte.php"=>"Décomptes"*/),
    // 4 => array("mission_supervision.php"=>"Mission de supervision", "gestion_mission_terrain.php"=>"Missions de terrain", "agenda.php"=>"Agenda","gestion_ateliers.php"=>"Ateliers et rencontres","gestion_reunion.php"=>"Réunions de coordination","liste_dno.php"=>"DANO","courrier_dno.php"=>"Courrier DANO","workflow.php"=>"Workflow","parametres_gestion_projet.php"=>"Paramètres"),
  //   5 => array("s_cadre_logique.php"=>"Cadre de résultat","s_supervision.php"=>"Gestion de projet","s_programmation.php"=>"Etats PTBA","s_ppm.php"=>"Etats PPM"),
-    6 => array("liste_document.php"=>"Documents"),
+    5 => array("liste_document.php"=>"Documents"),
    // 7 => array("map.php"=>"Cartographie"), /**/
-    7 => array("map.php"=>"Cartographie","liste_zone_collecte.php"=>"Couches de donn&eacute;es","rapports_cartographie_config.php"=>"fiches de donn&eacute;es")
+    6 => array("map.php"=>"Cartographie","liste_zone_collecte.php"=>"Couches de donn&eacute;es","rapports_cartographie_config.php"=>"fiches de donn&eacute;es")
     );
     /*if(isset($_SESSION["clp_projet"]) && $_SESSION["clp_projet"]=="01")
     {
@@ -61,12 +62,13 @@ if(!class_exists('Config')){
     }*/
     $MENU_TITLE = array(     //signal
     1 => array("Paramétrage","gear","parametrage.php"),
-    2 => array("Cadre de résultat","twitch","cadre_resultat.php"),
-    3 => array("Programmation","cubes","programmation.php"),/*
+    2 => array("Suivi des prjets","twitch","menu_suivi_resultat_ptba.php"),
+    3 => array("Cadre de résultat","twitch","cadre_resultat.php"),
+    4 => array("Programmation","cubes","programmation.php"),/*
     4 => array("Gestion du projet","exchange","suivi_exec.php"),
     5 => array("Rapports","tasks","rapport.php"),*/
-    6 => array("Documentation","newspaper-o","liste_document.php"),
-    7 => array("Cartographie","map-marker",'cartographie.php'),
+    5 => array("Documentation","newspaper-o","liste_document.php"),
+    6 => array("Cartographie","map-marker",'cartographie.php'),
     );
 }
 ?>

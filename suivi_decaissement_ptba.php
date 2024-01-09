@@ -56,66 +56,66 @@ if ((isset($_GET["id_sup_mission"]) && !empty($_GET["id_sup_mission"]))) {
   
   // echo "je suis la";   exit;
 
-  if (isset($_POST['envoyer']))  {
-    $decaissementId = $_POST['decaissementId'];
-    $statut = $_POST['statut'];
-    $annee_act = $_POST['annee_act'];
-    $id_activite = $_POST['id_activite'];
-    $source_financement = $_POST['source_financement'];
-    $commune = $_POST['commune'];
-    $date_collecte = date("Y-m-d");
-    $numero_facture = $_POST['numero_facture'];
-    $projet = $_POST["projet"];
-    $montant = str_replace(' ', '', $_POST['montant']);
-    $date = date("Y-m-d");
-    // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
+  // if (isset($_POST['envoyer']))  {
+  //   $decaissementId = $_POST['decaissementId'];
+  //   $statut = $_POST['statut'];
+  //   $annee_act = $_POST['annee_act'];
+  //   $id_activite = $_POST['id_activite'];
+  //   $source_financement = $_POST['source_financement'];
+  //   $commune = $_POST['commune'];
+  //   $date_collecte = date("Y-m-d");
+  //   $numero_facture = $_POST['numero_facture'];
+  //   $projet = $_POST["projet"];
+  //   $montant = str_replace(' ', '', $_POST['montant']);
+  //   $date = date("Y-m-d");
+  //   // Vous devrez peut-être valider et nettoyer les données avant de les utiliser dans la requête
 
-    // Exécutez la requête d'insertion avec des requêtes préparées
-    $insertSQL = "INSERT INTO ".$database_connect_prefix."decaissement_activite 
-                  (annee_act, id_activite, source_financement, commune, date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) 
-                  VALUES (:annee_act, :id_activite, :source_financement, :commune, :date_collecte, :statut, :montant, :numero_facture, :projet, :date, :personnel)";
+  //   // Exécutez la requête d'insertion avec des requêtes préparées
+  //   $insertSQL = "INSERT INTO ".$database_connect_prefix."decaissement_activite 
+  //                 (annee_act, id_activite, source_financement, commune, date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) 
+  //                 VALUES (:annee_act, :id_activite, :source_financement, :commune, :date_collecte, :statut, :montant, :numero_facture, :projet, :date, :personnel)";
 
-    // Utilisez la connexion à la base de données pour exécuter la requête
-    try {
-        $stmt = $pdar_connexion->prepare($insertSQL);
+  //   // Utilisez la connexion à la base de données pour exécuter la requête
+  //   try {
+  //       $stmt = $pdar_connexion->prepare($insertSQL);
 
-        // Liaison des paramètres
-        $stmt->bindParam(':annee_act', $annee_act, PDO::PARAM_INT);
-        $stmt->bindParam(':id_activite', $id_activite, PDO::PARAM_STR);
-        $stmt->bindParam(':source_financement', $source_financement, PDO::PARAM_STR);
-        $stmt->bindParam(':commune', $commune, PDO::PARAM_STR);
-        $stmt->bindParam(':date_collecte', $date_collecte, PDO::PARAM_STR);
-        $stmt->bindParam(':statut', $statut, PDO::PARAM_STR);
-        $stmt->bindParam(':montant', $montant, PDO::PARAM_INT);
-        $stmt->bindParam(':numero_facture', $numero_facture, PDO::PARAM_STR);
-        $stmt->bindParam(':projet', $projet, PDO::PARAM_STR);
-        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
-        $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
+  //       // Liaison des paramètres
+  //       $stmt->bindParam(':annee_act', $annee_act, PDO::PARAM_INT);
+  //       $stmt->bindParam(':id_activite', $id_activite, PDO::PARAM_STR);
+  //       $stmt->bindParam(':source_financement', $source_financement, PDO::PARAM_STR);
+  //       $stmt->bindParam(':commune', $commune, PDO::PARAM_STR);
+  //       $stmt->bindParam(':date_collecte', $date_collecte, PDO::PARAM_STR);
+  //       $stmt->bindParam(':statut', $statut, PDO::PARAM_STR);
+  //       $stmt->bindParam(':montant', $montant, PDO::PARAM_INT);
+  //       $stmt->bindParam(':numero_facture', $numero_facture, PDO::PARAM_STR);
+  //       $stmt->bindParam(':projet', $projet, PDO::PARAM_STR);
+  //       $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+  //       $stmt->bindParam(':personnel', $personnel, PDO::PARAM_STR);
 
-        // Exécution de la requête
+  //       // Exécution de la requête
         
-        $stmt->execute();
+  //       $stmt->execute();
 
-            // corrige ici apres linsertion je suis sur la meme page ici le pop up est fermer mais le tableau est vide je suis dans la condition else comme si ya rien dans le tableau dans cette meme page en bas 
-    } catch (Exception $e) {
-        die(mysql_error_show_message($e));
-    }
-    // $insertGoTo = $_SERVER['PHP_SELF'] . "?id_act=$id_act&code_act=$code_act&annee=$annee";
-    // if ($stmt) $insertGoTo .= "&insert=ok"; else $insertGoTo .= "&insert=no";   {
-    //   header(sprintf("Location: %s", $insertGoTo));
-    // }       
+  //           // corrige ici apres linsertion je suis sur la meme page ici le pop up est fermer mais le tableau est vide je suis dans la condition else comme si ya rien dans le tableau dans cette meme page en bas 
+  //   } catch (Exception $e) {
+  //       die(mysql_error_show_message($e));
+  //   }
+  //   // $insertGoTo = $_SERVER['PHP_SELF'] . "?id_act=$id_act&code_act=$code_act&annee=$annee";
+  //   // if ($stmt) $insertGoTo .= "&insert=ok"; else $insertGoTo .= "&insert=no";   {
+  //   //   header(sprintf("Location: %s", $insertGoTo));
+  //   // }       
 
-   } 
+  //  } 
                                          
-if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
-{ //Fonction
-  if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "MM_insert")) {
+// if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
+ //Fonction
+  if ((isset($_POST["envoyer"]))) {
     $insertSQL = sprintf("INSERT INTO ".$database_connect_prefix."decaissement_activite (annee_act, id_activite, source_financement, commune,  date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, '$date', '$personnel')",
                          GetSQLValueString($annee, "int"),
 					     GetSQLValueString($id_act, "text"),
 						 GetSQLValueString($_POST['source_financement'], "text"),
 						 GetSQLValueString($_POST['commune'], "text"),
-                        GetSQLValueString(implode('-',array_reverse(explode('/',$_POST['date_validation']))), "date"),
+                        GetSQLValueString($date, "date"),
                          GetSQLValueString($_POST['statut'], "text"),
                          GetSQLValueString($_POST["cout_realise"], "int"),
 						GetSQLValueString($_POST["numero_facture"], "text"),
@@ -130,6 +130,32 @@ if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
     if ($Result1) $insertGoTo .= "?insert=ok"; else $insertGoTo .= "?insert=no";
     header(sprintf("Location: %s", $insertGoTo));  exit();
   }
+  // test 
+if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form3"))
+{ //Fonction
+  if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "MM_insert")) {
+    $insertSQL = sprintf("INSERT INTO ".$database_connect_prefix."decaissement_activite (annee_act, id_activite, source_financement, commune,  date_collecte, statut, cout_realise, numero_facture, projet, date_enregistrement, id_personnel) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, '$date', '$personnel')",
+                         GetSQLValueString($annee, "int"),
+					     GetSQLValueString($id_act, "text"),
+						 GetSQLValueString($_POST['source_financement'], "text"),
+						 GetSQLValueString($_POST['commune'], "text"),
+                        GetSQLValueString($date, "date"),
+                         GetSQLValueString($_POST['statut'], "text"),
+                         GetSQLValueString($_POST["cout_realise"], "int"),
+						GetSQLValueString($_POST["numero_facture"], "text"),
+                         GetSQLValueString($_SESSION["clp_projet"], "text"));
+
+  try{
+        $Result1 = $pdar_connexion->prepare($insertSQL);
+        $Result1->execute();
+  }catch(Exception $e){ die(mysql_error_show_message($e)); }
+  
+      $insertGoTo = $_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee";
+    if ($Result1) $insertGoTo .= "?insert=ok"; else $insertGoTo .= "?insert=no";
+    header(sprintf("Location: %s", $insertGoTo));  exit();
+  }
+
+  // fin test 
 
   if ((isset($_POST["MM_delete"]) && !empty($_POST["MM_delete"]))) {
     $id = ($_POST["MM_delete"]);
@@ -412,7 +438,6 @@ $(document).ready(function() {
  <div class="widget-header"> <h4><i class="icon-reorder"></i> Suivi du d&eacute;caissement</h4>
    <?php if(isset($_SESSION['clp_niveau']) && $_SESSION['clp_niveau']==0){ ?>
 <?php echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&add=1","Nouveau d&eacute;caissement","<i class='icon-plus'> Nouveau d&eacute;caissement </i>","simple","./","pull-right p11","",0,"","plan_ptba.php"); ?>
-<?php echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&addd=1","Nouveau d&eacute;caissement","<i class='icon-plus'> Nouveau d&eacute;caissement </i>","simple","./","pull-right p11","",0,"","popup_content.php"); ?>
 <?php } ?>
 </div>
 <div class="widget-content" style="width:100%;">
@@ -499,33 +524,26 @@ data-annee_act="<?php echo $row['annee_act']; ?>" data-id_activite="<?php echo $
 echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'plan_ptba.php');
 ?>
                   </div></td>
-                  <!-- test  -->
-                  <td><div align="left">
-<?php $titre = "Ajouter"; $titre1 = "Ajout"; if(isset($row["cout_realise"]) && !empty($row["cout_realise"])){
-   $a = explode("|",$row_liste_mission1["document"]);
-    $j=1; foreach($a as $file){ if(file_exists($file)){
-       $name = substr(strrchr($file, "/"), 1);
-        echo "<a href='./download_file.php?file=".$file."' title='".$name."' style='display:block;' >Fichier ".$j."</a>"; $j++;
-         } 
-         }
-          $titre = "Modifier"; $titre1 = "Modification"; 
-          } 
-          ?>
-<div align="center">
+                                    <!-- test  -->
+                                    <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
+<td align="center" nowrap="nowrap" class=" ">
 <?php
-//echo do_link("",$_SERVER['PHP_SELF']."?id=$id&document=1","$titre1 de document de mission","$titre","simple","./","","",0,"","mission_supervision.php");
-echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'plan_ptba.php');
-?>
-                  </div></td>
-                  <!-- fin test  -->
+echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
+
+// echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&addd=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'popup_content.php');
+
+// echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id_sup_mission=".$id,"Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer cette d&eacute;pense ?');",0,"margin:0px 5px;",'plan_ptba.php');
+?></td>
+<?php } ?>
+                  <!-- fin teste  -->
                   <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
 <td align="center" nowrap="nowrap" class=" ">
 <?php
 echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&add=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'suivi_decaissement_ptba.php');
 
 // echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&addd=1","Modifier dé caissement PTBA ".$id,"","edit","./","","",1,"margin:0px 5px;",'popup_content.php');
-//echo do_link("",$_SERVER['PHP_SELF']."?id=$id&document=1","$titre1 de document de mission","$titre","simple","./","","",0,"","mission_supervision.php");
-echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_content('suivi_decaissement_ptba.php','id_act=$id_act&code_act=$code_act&annee=$annee&id=$id&document=1','modal-body_add',this.title);",1,"",'popup_content.php');
+
+echo do_link("",$_SERVER['PHP_SELF']."?id_act=$id_act&code_act=$code_act&annee=$annee&id_sup_mission=".$id,"Supprimer","","del","./","","return confirm('Voulez-vous vraiment supprimer cette d&eacute;pense ?');",0,"margin:0px 5px;",'plan_ptba.php');
 ?></td>
 <?php } ?>
 	    </tr>
@@ -616,9 +634,9 @@ echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_
         if (isset($row_liste_partenaires) && is_array($row_liste_partenaires)) {
             foreach ($row_liste_partenaires as $partenaire) {
                 if (isset($_POST['source_financement']) && $partenaire['source_financement'] == $_POST['source_financement']) {
-                    echo '<option value="' . $partenaire['source_financement'] . '" selected>' . $partenaire['sigle'] . '</option>';
+                    echo '<option value="' . $partenaire['source_financement'] . '" >' . $partenaire['sigle'] . '</option>';
                 } else {
-                    echo '<option value="' . $partenaire['sigle'] . '">' . $partenaire['sigle'] . '</option>';
+                    echo '<option value="' . $partenaire['sigle'] . '" selected>' . $partenaire['sigle'] . '</option>';
                 }
             }
         }
@@ -704,8 +722,7 @@ echo do_link("","","$titre1 de document de PTBA","$titre","simple","./","","get_
 <?php } ?>
   <input name="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "MM_update"; else echo "MM_insert" ; ?>" type="hidden" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo ($_GET["id"]); else echo "MM_insert" ; ?>" size="32" alt="">
 <?php if(!isset($_GET['add2']) && isset($_GET["id"]) && !empty($_GET["id"]) && isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']<2)) { ?>
-<input name="MM_delete" id="MM_delete" type="hidden" value="" size="32" alt="">
-<input name="del" type="submit" onclick="return delete_data('MM_delete','Supprimer cette DEPENSE ?','<?php echo ($_GET["id"]); ?>');" class="btn btn-danger pull-left" value="Supprimer" />
+  <input style="margin-left:-150px;" name="envoyer" type="submit" class="btn btn-success pull-right" value="<?php if(isset($_GET["id"]) && !empty($_GET["id"])) echo "Modifier état"; ?>" />
 <?php } ?>
 <input name="MM_form" id="MM_form" type="hidden" value="form3" size="32" alt="">
   <!--<input name="Submit2" type="reset" class="btn btn-success pull-right" value="Initialiser" />-->
@@ -779,7 +796,7 @@ elseif($taux_progressc>=70) $color = "success";
 
 <!-- Ajoutez ces scripts au bas de votre page -->
 <!-- Ajoutez ces scripts au bas de votre page -->
-<script>
+<!-- <script>
 $('.popup-trigger').hover(function() {
   $(this).css('cursor', 'pointer');
 }, function() {
@@ -857,7 +874,7 @@ $('.popup-trigger').hover(function() {
 //         });
 
 
-</script>
+</script> -->
 
 
 <!-- fin pop up form -->
