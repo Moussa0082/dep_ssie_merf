@@ -11,18 +11,80 @@ if (!isset ($_SESSION["clp_id"])) {
   exit;
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
-// if(isset($_GET['niveau']) && $_GET['niveau']!="") {$_SESSION["niveau"]=$_GET['niveau']; $niveau=$_SESSION["niveau"];} else { $_SESSION["niveau"]=0; $niveau=$_SESSION["niveau"]; }
 
 
 
-// $where = ($niveau==0)?" niveau =1":" niveau = ".$niveau." ";
-// if(isset($_GET['cmp']) && $_GET['cmp']!="") $wh = " and code=".GetSQLValueString($_GET['cmp'], "text"); else $wh = "";
+  
+extract($_GET); $statut = isset($statut)?$statut:0;
 
-// $editFormAction = $_SERVER['PHP_SELF'];
-// $currentPage = $_SERVER['PHP_SELF']."?niveau=$niveau";
-// if (isset($_SERVER['QUERY_STRING'])) {
-//   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
-// }
+
+$query_liste_projet = "SELECT * FROM projet P WHERE actif=$statut  ORDER BY code_projet asc";
+
+try{
+
+$liste_projet = $pdar_connexion->prepare($query_liste_projet);
+
+$liste_projet->execute();
+
+$row_projet = $liste_projet ->fetchAll();
+
+$totalRows_projet = $liste_projet->rowCount();
+
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+
+
+
+//requete pour recuperer la somme des budgets par projets
+$query_liste_part = "SELECT count(bailleur) as nbbail,  sum(montant) as partb, 
+  type_part.projet FROM ".$database_connect_prefix."partenaire, ".$database_connect_prefix."type_part 
+ WHERE code=bailleur  GROUP BY type_part.projet";
+
+try{
+    $liste_part = $pdar_connexion->prepare($query_liste_part);
+    $liste_part->execute();
+    $row_liste_part = $liste_part ->fetchAll();
+    $totalRows_liste_part = $liste_part->rowCount();
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+if($totalRows_liste_part>0){ foreach($row_liste_part as $row_liste_part){ 
+$bailleur[$row_liste_part["projet"]]=$row_liste_part["partb"]; 
+//$cbailleur[$row_liste_part["id_partenaire"]]=$row_liste_part["partb"];
+} 
+} 
+
+//requete pour recuperer le nombre total des taux par projets
+$query_liste_tache = "SELECT ptba.projet as projet, COUNT(groupe_tache.id_activite) as 
+nb_tache FROM ptba,groupe_tache WHERE ptba.id_ptba=groupe_tache.id_activite GROUP by ptba.projet";
+
+
+
+//Liste  tache
+try{
+    $liste_tache = $pdar_connexion->prepare($query_liste_tache);
+    $liste_tache->execute();
+    $row_liste_tache = $liste_tache ->fetchAll();
+    $totalRows_liste_tache = $liste_tache->rowCount();
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$tache=array();
+    if($totalRows_liste_tache>0){ foreach($row_liste_tache as $row_liste_tache){ 
+        $tache[$row_liste_tache["projet"]]=$row_liste_tache["nb_tache"]; 
+        }
+}
+
+
+$query_liste_ind = "SELECT ptba.projet as projet ,COUNT(indicateur_tache.id_activite) as nb_ind FROM ptba,indicateur_tache
+ WHERE ptba.id_ptba=indicateur_tache.id_activite GROUP by ptba.projet";
+//Liste indicateur
+try{
+    $liste_ind = $pdar_connexion->prepare($query_liste_ind);
+    $liste_ind->execute();
+    $row_liste_ind = $liste_ind ->fetchAll();
+    $totalRows_liste_ind = $liste_ind->rowCount();
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$indicateur=array();
+    if($totalRows_liste_ind>0){ foreach($row_liste_ind as $row_liste_ind){ 
+        $indicateur[$row_liste_ind["projet"]]=$row_liste_ind["nb_ind"]; 
+        }
+}
 
 ?>
 
@@ -264,11 +326,18 @@ theme_folder;?>/fontawesome/font-awesome-ie7.min.css"><![endif]-->
         </tr>
     </thead>
     <tbody>
+    <?php $i=0; $row_projet_array = $row_projet; foreach($row_projet as $row_projet) { $id = $row_projet['code_projet']; ?>
         <tr>
-            <td>Titre du projet</td>
-            <td>Tâche</td>
-            <td>Indicateurs</td>
-            <td> Budget</td>
+            <td> <?php echo $row_projet['sigle_projet']; ?></td>
+            <td>
+  <?php  if(isset($tache[$id])) echo $tache[$id]  ?>
+        </td>
+        <td>
+  <?php  if(isset($indicateur[$id])) echo $indicateur[$id]  ?>
+        </td>
+            <td> 
+            <?php  if(isset($bailleur[$id])) echo "&nbsp;&nbsp;<span title=\"".number_format($bailleur[$id], 0, ',', ' ')." USD\">".number_format($bailleur[$id], 0, ',', ' ')."&nbsp;&nbsp;</span>";  else echo ""; ?>
+            </td>
             <td>Engagé </td>
             <td>taux engagé</td>
             <td>Ordonnancé</td>
@@ -276,6 +345,7 @@ theme_folder;?>/fontawesome/font-awesome-ie7.min.css"><![endif]-->
             <td>Décaissé</td>
             <td>Taux décaissé</td>
         </tr>
+        <?php } ?>
    
     </tbody>
 </table>

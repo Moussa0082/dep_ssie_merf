@@ -1,19 +1,23 @@
 <?php
 ///////////////////////////////////////////////
 /*                 SSE                       */
-/*	Conception & Développement: BAMASOFT */
+/*	Conception & Dï¿½veloppement: BAMASOFT */
 ///////////////////////////////////////////////
 session_start();
 include_once 'system/configuration.php';
 $config = new Config;
+
+
+  
 
 if (!isset ($_SESSION["clp_id"])) {
   //header(sprintf("Location: %s", "./"));
   exit;
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
-//header('Content-Type: text/html; charset=ISO-8859-15');
+echo "plan taches  "; exit();
 
+//header('Content-Type: text/html; charset=ISO-8859-15');
 //if(isset($_GET['annee'])) {$annee=$_GET['annee'];} else $annee=date("Y"); if(isset($_GET['cp'])) {$cp=$_GET['cp'];} else $cp=0;
 
 //if(isset($_GET['code_modele'])) { $code_modele = $_GET['code_modele']; }
@@ -25,13 +29,14 @@ if(isset($_GET['code_act'])) {$code_activite = $_GET['code_act'];} else $code_ac
 if(isset($_GET["id"])) { $id=$_GET["id"];} else $id=0;
 
 function frenchMonthName($monthnum) {
-      $armois=array("", "Jan", "Fév", "Mars", "Avril", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc");
+      $armois=array("", "Jan", "Fï¿½v", "Mars", "Avril", "Mai", "Juin", "Juil", "Aoï¿½t", "Sept", "Oct", "Nov", "Dï¿½c");
       if ($monthnum>0 && $monthnum<13) {
           return $armois[$monthnum];
       } else {
           return $monthnum;
       }
   }
+
 
 $editFormAction = $_SERVER['PHP_SELF'];
 /*
@@ -295,7 +300,7 @@ function check_proportion(){
     </div></td>
     </tr>
     <?php } ?>
-    <?php } else echo "<h3>Aucune tâche saisie</h3>" ;?>
+    <?php } else echo "<h3>Aucune tï¿½che saisie</h3>" ;?>
   </table>
 <?php if(isset($_SESSION['clp_niveau'])) { ?>
 <div class="form-actions">
@@ -316,7 +321,7 @@ function check_proportion(){
 </div>
 <?php } elseif(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==1)){ ?>
 <div class="widget box">
-<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification d'étape":"Nouvelle étape"; ?></h4>
+<div class="widget-header"> <h4><i class="icon-reorder"></i> <?php echo (isset($_GET["id"]) && !empty($_GET["id"]))?"Modification d'ï¿½tape":"Nouvelle ï¿½tape"; ?></h4>
 <a href="<?php echo $lien1; ?>" class="pull-right p11" title="Annuler" >Annuler </a>
 </div>
 <div class="widget-content">
@@ -340,7 +345,7 @@ function check_proportion(){
 <tr valign="top">
       <td colspan="2">
         <div class="form-group">
-          <label for="intitule_tache" class="col-md-12 control-label">Intitulé de la tâche <span class="required">*</span></label>
+          <label for="intitule_tache" class="col-md-12 control-label">Intitulï¿½ de la tï¿½che <span class="required">*</span></label>
           <div class="col-md-12">
             <textarea class="form-control required" cols="200" rows="2" type="text" name="intitule_tache" id="intitule_tache"><?php if(isset($_GET['id'])) echo $row_edit_etape['intitule_tache']; ?></textarea>
           </div>

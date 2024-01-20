@@ -46,6 +46,7 @@ $lien1 .= "?annee=$annee&id_act=$id_act";
 }catch(Exception $e){ die(mysql_error_show_message($e)); }
 
 if(isset($row_max_jalon['id_jalon'])) $max_jalon_id=$row_max_jalon['id_jalon']; else $max_jalon_id=0;*/
+// echo "plan taches sans type"; exit();
 
 
 if(isset($_GET["id"])) { $id=$_GET["id"];
@@ -244,14 +245,19 @@ $liste_mois = mysql_query($query_liste_mois, $pdar_connexion) or die(mysql_error
 	mysql_free_result($liste_mois);*/
 
 // $code_act=$row_act['id_ptba'];
+
 //query tache
 $query_tache = "select * FROM ".$database_connect_prefix."groupe_tache where id_activite='$id_act' ORDER BY code_tache ASC";
-    	   try{
+  
+
+try{
     $tache = $pdar_connexion->prepare($query_tache);
     $tache->execute();
     $row_tache = $tache ->fetchAll();
     $totalRows_tache = $tache->rowCount();
 }catch(Exception $e){ die(mysql_error_show_message($e)); }
+
+
 
 $pcent = 100;
 

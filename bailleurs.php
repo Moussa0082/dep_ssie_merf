@@ -329,6 +329,7 @@ try{
     $row_liste_bailleur = $liste_bailleur ->fetchAll();
     $totalRows_liste_bailleur = $liste_bailleur->rowCount();
 }catch(Exception $e){ die(mysql_error_show_message($e)); }
+
 $bailleur=$cbailleur=array();
 $query_liste_part = "SELECT id_partenaire, count(bailleur) as nbbail, sum(montant) as partb FROM ".$database_connect_prefix."partenaire, ".$database_connect_prefix."type_part WHERE code=bailleur and projet='".$_SESSION["clp_projet"]."' GROUP BY id_partenaire";
 try{

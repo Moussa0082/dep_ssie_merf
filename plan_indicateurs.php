@@ -1,7 +1,7 @@
 <?php
 ///////////////////////////////////////////////
 /*                 SSE                       */
-/*	Conception & Développement: BAMASOFT */
+/*	Conception & Dï¿½veloppement: BAMASOFT */
 ///////////////////////////////////////////////
 session_start();
 include_once 'system/configuration.php';
@@ -13,6 +13,7 @@ if (!isset ($_SESSION["clp_id"])) {
 }*/
 include_once $config->sys_folder . "/database/db_connexion.php";
 //header('Content-Type: text/html; charset=ISO-8859-15');
+
 
 //if(isset($_GET['annee'])) {$annee=$_GET['annee'];} else $annee=date("Y"); if(isset($_GET['cp'])) {$cp=$_GET['cp'];} else $cp=0;
 /*if(isset($_GET['id_act'])) { $id_act = $_GET['id_act']; }
@@ -109,6 +110,7 @@ $liste_act  = mysql_query($query_liste_act , $pdar_connexion) or die(mysql_error
 $row_liste_act  = mysql_fetch_assoc($liste_act);
 $totalRows_liste_act  = mysql_num_rows($liste_act);*/
 //$code_act=$row_act['code_activite_ptba'];
+
 
 if ((isset($_POST["MM_form"])) && ($_POST["MM_form"] == "form1"))
 {
@@ -285,7 +287,7 @@ try{
 
 //echo $proportion;
 
-$tableauMois=array('01<>Jan<>J','02<>Fev<>F','03<>Mars<>M','04<>Avril<>A','05<>Mai<>M','06<>Juin<>J','07<>Juil<>J','08<>Aout<>A','09<>Sep<>S','10<>Oct<>O','11<>Nov<>N','12<>Déc<>D');
+$tableauMois=array('01<>Jan<>J','02<>Fev<>F','03<>Mars<>M','04<>Avril<>A','05<>Mai<>M','06<>Juin<>J','07<>Juil<>J','08<>Aout<>A','09<>Sep<>S','10<>Oct<>O','11<>Nov<>N','12<>Dï¿½c<>D');
 
   for($j=1;$j<=4;$j++)
   {$tableauAnnee[]=$j."<>".$j; }
@@ -477,8 +479,8 @@ foreach($tableauAnnee as $van1){  $augla = explode('<>',$van1);     $iugla = $au
      
       
       <?php if(isset($_SESSION['clp_niveau']) && ($_SESSION['clp_niveau']==0)) { ?>
-       <td align="center"><a href="<?php echo $lien."&id=".$row_tache['id_indicateur_tache']."&add=1"; ?>" title="Modifier la tâche" ><img align="center" src='./images/edit.png' width='20' height='20' alt='Modifier' style="margin:0px 5px 0px 0px;"></a>
-<a onClick="return confirm('Voulez vous vraiment suppimer cette t&acirc;che ?');" href="<?php echo $lien."&id_sup=".$row_tache['id_indicateur_tache'].""; ?>" title="Supprimer la tâche" ><img align="center" src='./images/delete.png' width='20' height='20' alt='Supprimer' style="margin:0px 5px 0px 0px;"></a></td>
+       <td align="center"><a href="<?php echo $lien."&id=".$row_tache['id_indicateur_tache']."&add=1"; ?>" title="Modifier la tï¿½che" ><img align="center" src='./images/edit.png' width='20' height='20' alt='Modifier' style="margin:0px 5px 0px 0px;"></a>
+<a onClick="return confirm('Voulez vous vraiment suppimer cette t&acirc;che ?');" href="<?php echo $lien."&id_sup=".$row_tache['id_indicateur_tache'].""; ?>" title="Supprimer la tï¿½che" ><img align="center" src='./images/delete.png' width='20' height='20' alt='Supprimer' style="margin:0px 5px 0px 0px;"></a></td>
       <?php } ?>
       </tr>
     <?php }  ?>

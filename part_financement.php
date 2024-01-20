@@ -4,7 +4,7 @@
 
 /*                 SSE                       */
 
-/*	Conception & Développement: SEYA SERVICES */
+/*	Conception & Dï¿½veloppement: SEYA SERVICES */
 
 ///////////////////////////////////////////////
 
@@ -27,6 +27,7 @@ if (!isset ($_SESSION["clp_id"]) && isset($_GET["code_act"]) && !empty($_GET["id
 include_once $config->sys_folder . "/database/db_connexion.php";
 
 header('Content-Type: text/html; charset=UTF-8');
+
 
 
 

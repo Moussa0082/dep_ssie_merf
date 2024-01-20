@@ -11,20 +11,100 @@ if (!isset ($_SESSION["clp_id"])) {
   exit;
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
-// if(isset($_GET['niveau']) && $_GET['niveau']!="") {$_SESSION["niveau"]=$_GET['niveau']; $niveau=$_SESSION["niveau"];} else { $_SESSION["niveau"]=0; $niveau=$_SESSION["niveau"]; }
+
+extract($_GET); $statut = isset($statut)?$statut:0;
+
+
+$query_liste_projet = "SELECT * FROM projet P WHERE actif=$statut  ORDER BY code_projet asc";
+
+try{
+
+$liste_projet = $pdar_connexion->prepare($query_liste_projet);
+
+$liste_projet->execute();
+
+$row_projet = $liste_projet ->fetchAll();
+
+$totalRows_projet = $liste_projet->rowCount();
+
+}catch(Exception $e){ die(mysql_error_show_message($e)); 
+
+}
+
+
+// nombre  activite                                             
+$query_liste_act = "SELECT COUNT(code_activite_ptba) as act from ptba GROUP BY projet";
+
+try{
+
+$liste_act = $pdar_connexion->prepare($query_liste_act);
+
+$liste_act->execute();
+
+$row_projet_act = $liste_act ->fetchAll();
+
+$totalRows_projet_act = $liste_act->rowCount();
+
+}catch(Exception $e){
+   die(mysql_error_show_message($e)); 
+
+}
+
+
+//requete pour recuperer la somme des budgets par projets
+$query_liste_part = "SELECT count(bailleur) as nbbail, sum(montant) as partb, type_part.projet FROM ".$database_connect_prefix."partenaire, ".$database_connect_prefix."type_part WHERE code=bailleur  GROUP BY type_part.projet";
+try{
+    $liste_part = $pdar_connexion->prepare($query_liste_part);
+    $liste_part->execute();
+    $row_liste_part = $liste_part ->fetchAll();
+    $totalRows_liste_part = $liste_part->rowCount();
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+if($totalRows_liste_part>0){ foreach($row_liste_part as $row_liste_part){ 
+$bailleur[$row_liste_part["projet"]]=$row_liste_part["partb"]; 
+} 
+} 
 
 
 
-// $where = ($niveau==0)?" niveau =1":" niveau = ".$niveau." ";
-// if(isset($_GET['cmp']) && $_GET['cmp']!="") $wh = " and code=".GetSQLValueString($_GET['cmp'], "text"); else $wh = "";
 
-// $editFormAction = $_SERVER['PHP_SELF'];
-// $currentPage = $_SERVER['PHP_SELF']."?niveau=$niveau";
-// if (isset($_SERVER['QUERY_STRING'])) {
-//   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
-// }
+$query_liste_ind = "SELECT ptba.projet as projet,   COUNT(ptba.code_activite_ptba) as nb_act , COUNT(indicateur_tache.id_activite) as nb_ind FROM ptba,indicateur_tache
+ WHERE ptba.id_ptba=indicateur_tache.id_activite GROUP by ptba.projet";
+//Liste indicateur
+try{
+    $liste_ind = $pdar_connexion->prepare($query_liste_ind);
+    $liste_ind->execute();
+    $row_liste_ind = $liste_ind ->fetchAll();
+    $totalRows_liste_ind = $liste_ind->rowCount();
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$indicateur=array();
+if($totalRows_liste_ind>0){ foreach($row_liste_ind as $row_liste_ind){ 
+  $indicateur[$row_liste_ind["projet"]]=$row_liste_ind["nb_ind"]; 
+  // $act[$row_liste_ind["projet"]] = $row_liste_ind["nb_act"];
+  
+}
+}
+
+$query_nb_tache = "SELECT projet, COUNT(code_activite_ptba) as act from ptba GROUP BY projet" ;
+//  Liste indicateur
+try{
+    $liste_nb_tache = $pdar_connexion->prepare($query_nb_tache);
+    $liste_nb_tache->execute();
+    $row_nb_tache = $liste_nb_tache ->fetchAll();
+    $totalRows_nb_tache = $liste_nb_tache->rowCount();
+  }catch(Exception $e){ die(mysql_error_show_message($e)); }
+  $act=array();
+if($totalRows_nb_tache>0){ foreach($row_nb_tache as $row_nb_tache){ 
+  $act[$row_nb_tache["projet"]]=$row_nb_tache["act"]; 
+  // $act[$row_liste_ind["projet"]] = $row_liste_ind["nb_act"];
+  
+}
+}
+
 
 ?>
+
+
+
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -243,32 +323,44 @@ theme_folder;?>/fontawesome/font-awesome-ie7.min.css"><![endif]-->
 
 ?>
 <form name="form1" action="" method="post">
+
+    
+    
 <table id="example" border="0" align="center" cellspacing="0" class="table table-striped table-bordered table-hover table-responsive  table-colvis table-checkable datatable dataTable" >
                 <thead>
-                  <tr>
+                    <tr>
                     <!-- <th class="checkbox-column"> <input type="checkbox" class="uniform"> </th> -->
                     <td width="120"><strong>Titre du projet</strong></td>
                     <td width="120"><strong>Nombre d'activités</strong></td>
                     <td> <strong>Nombre d'indicateurs</strong> </td>
                     
-                   <td width="80"><strong>Budget</strong></td>
-                  </tr>
-                </thead>
-                <tbody>
+                    <td width="80"><strong>Budget</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                    <?php $i=0; $row_projet_array = $row_projet_act; foreach($row_projet_act as $row_projet_act) { 
+                       ?>
+                    <?php $i=0; $row_projet_array = $row_projet; foreach($row_projet as $row_projet) { $id = $row_projet['code_projet']; ?>
                 <tr>
-                    <td>Titre du projet </td>
-                    <td> Nombre d'activité  </td>
-                    <td>Nombre d'indicateurs</td>
+                    <td> <?php echo $row_projet['sigle_projet'] ?> </td>
+                    <td> <?php  if(isset($act[$id])) echo $act[$id]  ?></td>
+                    <td>   <?php  if(isset($indicateur[$id])) echo $indicateur[$id]  ?>
+ </td>
 
                <td class=" " align="center">
-                Budget
+               <?php  if(isset($bailleur[$id])) echo "&nbsp;&nbsp;<span title=\"".number_format($bailleur[$id], 0, ',', ' ')." USD\">".number_format($bailleur[$id], 0, ',', ' ')."&nbsp;&nbsp;</span>";  else echo ""; ?>
                   </td>
                 </tr>
+                <?php } ?>
+                <?php } ?>
+
+              
                 </tbody>
                 <!-- <tr>
                   <td><div align="center" class=""><h2>Aucun R&eacute;sultat</h2></div></td>
                 </tr> -->
             </table>
+
 </form>
 
 

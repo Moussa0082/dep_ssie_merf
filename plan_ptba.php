@@ -12,6 +12,7 @@ if (!isset ($_SESSION["clp_id"])) {
   exit;
 }
 include_once $config->sys_folder . "/database/db_connexion.php";
+
 ?>
 
 <?php

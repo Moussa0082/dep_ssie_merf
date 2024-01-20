@@ -233,7 +233,7 @@ var oTable = $('#mtable<?php echo $annee; ?>').dataTable( {
 <th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier">Période</th>
 <th align="center" class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier" width="150">Coût</th>
 <!--<th class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier" width="150"><div align="center">&nbsp;Co&ucirc;ts&nbsp;</div></th>-->
-<th align="center" class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier" width="150"><div align="center">T&acirc;ches</div>  <div align="center"></div>  <div align="center"></div></th>
+<th align="center" class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier" width="150"><div align="center">Tâches</div>  <div align="center"></div>  <div align="center"></div></th>
 
 <th align="center" class="sorting" role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" aria-label="Trier" width="150"><div align="center">Indicateurs</div>  <div align="center"></div>  <div align="center"></div></th>
 

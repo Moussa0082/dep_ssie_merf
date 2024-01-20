@@ -234,7 +234,8 @@ try{
 if($totalRows_liste_part>0){ foreach($row_liste_part as $row_liste_part){ 
 $bailleur[$row_liste_part["projet"]]=$row_liste_part["partb"]; 
 //$cbailleur[$row_liste_part["id_partenaire"]]=$row_liste_part["partb"];
-} }
+} 
+}
 
 $onglet_array = array(0=>"Projets en cours",1=>"Projets clôturés");
 
@@ -380,7 +381,7 @@ buttons: [{extend: 'copy',className: 'btn-sm'},{extend: 'csv',title: $('#sub-tit
 
                             <div class="col-sm-3">
 
-                                    <div class="project-label">D&eacute;marage</div>
+                                    <div class="project-label">Démarage</div>
 
                                     <b><small><?php echo $row_projet['annee_debut']; ?></small></b>
 
@@ -390,7 +391,7 @@ buttons: [{extend: 'copy',className: 'btn-sm'},{extend: 'csv',title: $('#sub-tit
 
                                     <div class="project-label">Bailleurs</div>
 
-                                    <b><small><?php echo $row_projet['modalite_financement']; ?></small></b>
+                                    <b><small><?php echo $row_liste_part['modalite_financement']; ?></small></b>
 
                             </div>
 

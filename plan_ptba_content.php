@@ -14,6 +14,9 @@ if (!isset ($_SESSION["clp_id"])) {
 include_once $config->sys_folder . "/database/db_connexion.php";
 //header('Content-Type: text/html; charset=ISO-8859-15');
 
+// echo "plan taches  "; exit();
+
+
 $plog=$_SESSION["clp_id"];
 $date=date("Y-m-d");
 if(isset($_GET['annee'])) {$annee=intval($_GET['annee']);} else $annee=date("Y");
