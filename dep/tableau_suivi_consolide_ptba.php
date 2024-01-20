@@ -17,7 +17,7 @@ include_once $config->sys_folder . "/database/db_connexion.php";
   
 extract($_GET); $statut = isset($statut)?$statut:0;
 
-
+//Liste des projets recuperation 
 $query_liste_projet = "SELECT * FROM projet P WHERE actif=$statut  ORDER BY code_projet asc";
 
 try{
@@ -31,6 +31,75 @@ $row_projet = $liste_projet ->fetchAll();
 $totalRows_projet = $liste_projet->rowCount();
 
 }catch(Exception $e){ die(mysql_error_show_message($e)); }
+
+// Montant engagé recuperation par projet
+$query_liste_eng = "SELECT statut , decaissement_activite.projet, SUM(cout_realise) as eng from projet , decaissement_activite WHERE decaissement_activite.projet = projet.code_projet And statut=0 GROUP BY projet" ;
+
+try{
+
+$liste_eng = $pdar_connexion->prepare($query_liste_eng);
+
+$liste_eng->execute();
+
+$row_eng = $liste_eng ->fetchAll();
+
+$totalRows_eng = $liste_eng->rowCount();
+
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$eng = array();
+if($totalRows_eng>0){ foreach($row_eng as $row_eng){ 
+    $eng[$row_eng["projet"]]=$row_eng["eng"]; 
+    } 
+} 
+
+// Montant ordonnancé recuperation par projet
+$query_liste_ord = "SELECT statut , decaissement_activite.projet, SUM(cout_realise) as ord from projet , decaissement_activite WHERE decaissement_activite.projet = projet.code_projet And statut=1 GROUP BY projet" ;
+
+try{
+
+$liste_ord = $pdar_connexion->prepare($query_liste_ord);
+
+$liste_ord->execute();
+
+$row_ord = $liste_ord ->fetchAll();
+
+$totalRows_ord = $liste_ord ->rowCount();
+
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$ord = array();
+if($totalRows_ord>0){ foreach($row_ord as $row_ord){ 
+    $ord[$row_ord["projet"]]=$row_ord["ord"]; 
+    } 
+}  
+
+
+// Montant decaissé recuperation par projet
+$query_liste_decaisser = "SELECT statut , decaissement_activite.projet, SUM(cout_realise) as decaisser from projet , decaissement_activite WHERE decaissement_activite.projet = projet.code_projet And statut=2 GROUP BY projet" ;
+
+try{
+
+$liste_decaisser = $pdar_connexion->prepare($query_liste_decaisser);
+
+$liste_decaisser->execute();
+
+$row_decaisser = $liste_decaisser ->fetchAll();
+
+$totalRows_decaisser = $liste_decaisser ->rowCount();
+
+}catch(Exception $e){ die(mysql_error_show_message($e)); }
+$decaisser = array();
+$taux_d = array();
+if($totalRows_decaisser>0){ foreach($row_decaisser as $row_decaisser){ 
+    $decaisser[$row_decaisser["projet"]]=$row_decaisser["decaisser"]; 
+    
+    $taux_d[] = ($decaisser[$row_decaisser["decaisser"]]  * 100)  ;
+    
+    
+} 
+} 
+
+
+
 
 
 
@@ -83,7 +152,7 @@ try{
 $indicateur=array();
     if($totalRows_liste_ind>0){ foreach($row_liste_ind as $row_liste_ind){ 
         $indicateur[$row_liste_ind["projet"]]=$row_liste_ind["nb_ind"]; 
-        }
+    }  
 }
 
 ?>
@@ -330,20 +399,41 @@ theme_folder;?>/fontawesome/font-awesome-ie7.min.css"><![endif]-->
         <tr>
             <td> <?php echo $row_projet['sigle_projet']; ?></td>
             <td>
-  <?php  if(isset($tache[$id])) echo $tache[$id]  ?>
+  <?php  if(isset($tache[$id])) echo $tache[$id] ; else echo "Pas de tâche definis"; ?>
         </td>
         <td>
-  <?php  if(isset($indicateur[$id])) echo $indicateur[$id]  ?>
+  <?php  if(isset($indicateur[$id])) echo $indicateur[$id]  ; else echo "Aucun indicateur"; ?>
         </td>
             <td> 
             <?php  if(isset($bailleur[$id])) echo "&nbsp;&nbsp;<span title=\"".number_format($bailleur[$id], 0, ',', ' ')." USD\">".number_format($bailleur[$id], 0, ',', ' ')."&nbsp;&nbsp;</span>";  else echo ""; ?>
             </td>
-            <td>Engagé </td>
-            <td>taux engagé</td>
-            <td>Ordonnancé</td>
-            <td>Taux ordonnancé</td>
-            <td>Décaissé</td>
-            <td>Taux décaissé</td>
+            <td>  <?php  if(isset($eng[$id])) echo $eng[$id] ; else echo "0"; ?> </td>
+            <td><?php
+if (isset($eng[$id]) && isset($bailleur[$id])) {
+    $taux = ($eng[$id] * 100) / $bailleur[$id];
+    echo number_format($taux, 2) . " %";
+} else {
+    echo "0.00 %";
+}
+?></td>
+            <td> <?php  if(isset($ord[$id])) echo $ord[$id] ; else echo "0"; ?> </td>
+            <td> <?php
+if (isset($ord[$id]) && isset($bailleur[$id])) {
+    $taux = ($ord[$id] * 100) / $bailleur[$id];
+    echo number_format($taux, 2) . " %";
+} else {
+    echo "0.00 %";
+}
+?></td>
+            <td> <?php  if(isset($decaisser[$id])) echo $decaisser[$id]; else echo "0"; ?> </td>
+            <td> <?php
+if (isset($decaisser[$id]) && isset($bailleur[$id])) {
+    $taux = ($decaisser[$id] * 100) / $bailleur[$id];
+    echo number_format($taux, 2) . " %";
+} else {
+    echo "0.00 %";
+}
+?> </td>
         </tr>
         <?php } ?>
    
